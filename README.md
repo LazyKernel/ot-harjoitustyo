@@ -1,4 +1,5 @@
 # Monk - A bot for discord designed for MAYHEM
+This isn't gonna go down well.
 ## Features
 * Moderation features
   * kick/ban/mute
