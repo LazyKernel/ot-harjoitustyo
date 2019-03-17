@@ -11,6 +11,3 @@ This isn't gonna go down well.
 [Tree](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/laskarit/viikko1/komentorivi.txt)
 
 [Gitlog](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/laskarit/viikko1/gitlog.txt)
-
-## Merge
-Broken
