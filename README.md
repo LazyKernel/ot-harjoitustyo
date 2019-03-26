@@ -1,16 +1,13 @@
-# Monk - A bot for discord designed for MAYHEM
-This isn't gonna go down well.
+# Multiplayer Asteroids
+Should be fine.
 ## Features
-* Moderation features
-  * kick/ban/mute
-  * mod-log
-  * auto moderation (_deleting messages that include banned words/phrases_)
-  * chat purge
+* Simple 2 person multiplayer
+* OpenGL (most likely)
+* Simple UI
+* Score data
+* Simple player customization
   
 ## Links
 [Tree](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/laskarit/viikko1/komentorivi.txt)
 
 [Gitlog](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/laskarit/viikko1/gitlog.txt)
-
-## Time to break this thing
-Merge problem
