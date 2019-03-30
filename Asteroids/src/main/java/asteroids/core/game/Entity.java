@@ -6,7 +6,7 @@ import java.util.List;
 public class Entity
 {
     private List<EntityComponent> entityComponents = new ArrayList<>();
-    private Transform transform;
+    private Transform transform = new Transform();
 
     public void render()
     {

@@ -1,43 +1,46 @@
 package asteroids.core.game;
 
-import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class Transform
 {
-    private Matrix3f transformMatrix;
+    private Matrix4f transformMatrix;
 
-    private Vector2f position;
+    private Vector3f position;
     private float rotation;
-    private Vector2f scale;
+    private Vector3f scale;
 
     private boolean updated;
 
     public Transform()
     {
-        transformMatrix = new Matrix3f();
+        transformMatrix = new Matrix4f();
+        position = new Vector3f(0.0f, 0.0f, 1.0f);
+        rotation = 0.0f;
+        scale = new Vector3f(1.0f, 1.0f, 1.0f);
         updated = false;
     }
 
-    public Matrix3f getTransformMatrix() {
+    public Matrix4f getTransformMatrix() {
         if (updated)
             updateMatrix();
 
         return transformMatrix;
     }
 
-    public void setTransformMatrix(Matrix3f transformMatrix) {
+    public void setTransformMatrix(Matrix4f transformMatrix) {
         this.transformMatrix = transformMatrix;
         updated = false;
     }
 
     public Vector2f getPosition() {
-        return position;
+        return new Vector2f(position.x, position.y);
     }
 
     public void setPosition(Vector2f position) {
-        this.position = position;
+        this.position = new Vector3f(position.x, position.y, 1.0f);
         updated = true;
     }
 
@@ -51,23 +54,23 @@ public class Transform
     }
 
     public Vector2f getScale() {
-        return scale;
+        return new Vector2f(scale.x, scale.y);
     }
 
     public void setScale(Vector2f scale) {
-        this.scale = scale;
+        this.scale = new Vector3f(scale.x, scale.y, 1.0f);
         updated = true;
     }
 
     public void translate(Vector2f vec)
     {
-        position = new Vector2f(position.x + vec.x, position.y + vec.y);
+        position = new Vector3f(position.x + vec.x, position.y + vec.y, 1.0f);
         updated = true;
     }
 
     public void translate(Vector3f vec)
     {
-        position = new Vector2f(position.x + vec.x, position.y + vec.y);
+        position = new Vector3f(position.x + vec.x, position.y + vec.y, 1.0f);
         updated = true;
     }
 
@@ -79,15 +82,17 @@ public class Transform
 
     public void scale(Vector2f vec)
     {
-        scale = new Vector2f(position.x + vec.x, position.y + vec.y);
+        scale = new Vector3f(position.x + vec.x, position.y + vec.y, 1.0f);
         updated = true;
     }
 
     private void updateMatrix()
     {
-        this.transformMatrix = new Matrix3f((float)Math.cos(rotation) * scale.x, (float)-Math.sin(rotation), position.x,
-                                            (float)Math.sin(rotation), (float)Math.cos(rotation) * scale.y, position.y,
-                                            0.0f, 0.0f, 1.0f);
+        /*this.transformMatrix = new Matrix4f((float)Math.cos(rotation) * scale.x, (float)-Math.sin(rotation), position.x, 0.0f,
+                                            (float)Math.sin(rotation), (float)Math.cos(rotation) * scale.y, position.y, 0.0f,
+                                            0.0f, 0.0f, 1.0f, 0.0f,
+                                            0.0f, 0.0f, 0.0f, 1.0f);*/
+        this.transformMatrix = new Matrix4f().scale(scale).rotateZ(rotation).translate(position);
         updated = false;
     }
 }

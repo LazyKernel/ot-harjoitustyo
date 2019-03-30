@@ -2,6 +2,8 @@ package asteroids.core.game.components;
 
 import asteroids.core.game.EntityComponent;
 import asteroids.core.game.input.KeyboardHandler;
+import asteroids.core.graphics.Camera;
+import asteroids.core.graphics.shaders.PlayerShader;
 import com.sun.scenario.effect.Merge;
 import org.joml.Matrix3f;
 import org.joml.Vector2f;
@@ -13,6 +15,9 @@ import java.nio.FloatBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class PlayerMesh extends EntityComponent
 {
@@ -23,7 +28,11 @@ public class PlayerMesh extends EntityComponent
     private static final int VERTEX_SIZE = 3;
 
     private int pVBO = 0;
-    private int pColorVBO = 0;
+    private int pVAO = 0;
+
+    private PlayerShader shader;
+
+    private Vector3f color = new Vector3f(1.0f, 0.0f, 1.0f);
 
     @Override
     public void init()
@@ -37,45 +46,53 @@ public class PlayerMesh extends EntityComponent
             vertexData.put(POINTS[0].get(stack.mallocFloat(3)));
             vertexData.flip();
 
-            FloatBuffer colorData = BufferUtils.createFloatBuffer((POINTS.length + 1) * VERTEX_SIZE);
-            colorData.put(new float[] { 1f, 0f, 0f, });
-            colorData.put(new float[] { 0f, 1f, 0f, });
-            colorData.put(new float[] { 0f, 0f, 1f, });
-            colorData.put(new float[] { 1f, 0f, 0f, });
-            colorData.flip();
-
             pVBO = glGenBuffers();
             glBindBuffer(GL_ARRAY_BUFFER, pVBO);
             glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-            pColorVBO = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, pColorVBO);
-            glBufferData(GL_ARRAY_BUFFER, colorData, GL_STATIC_DRAW);
+            pVAO = glGenVertexArrays();
+            glBindVertexArray(pVAO);
+            glEnableVertexAttribArray(0);
+
+            glBindBuffer(GL_ARRAY_BUFFER, pVBO);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+            glDisableVertexAttribArray(0);
+            glBindVertexArray(0);
         }
         catch (Exception e)
         {
             System.err.println(e.getMessage());
         }
+
+        shader = new PlayerShader();
+        shader.init();
+
+        getTransform().setScale(new Vector2f(200, 200));
+        //getTransform().setPosition(new Vector2f(400, 300));
     }
 
     @Override
     public void render()
     {
-        glBindBuffer(GL_ARRAY_BUFFER, pVBO);
-        glVertexPointer(VERTEX_SIZE, GL_FLOAT, 0, 0L);
+        try (MemoryStack stack = MemoryStack.stackPush())
+        {
+            glBindVertexArray(pVAO);
+            glEnableVertexAttribArray(0);
+            shader.bind();
 
-        glBindBuffer(GL_ARRAY_BUFFER, pColorVBO);
-        glColorPointer(VERTEX_SIZE, GL_FLOAT, 0, 0L);
+            glUniform3f(1, color.x, color.y, color.z);
+            glUniformMatrix4fv(2, false, getTransform().getTransformMatrix().get(stack.mallocFloat(16)));
+            glUniformMatrix4fv(3, false, Camera.getProjectionMatrix().get(stack.mallocFloat(16)));
 
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_COLOR_ARRAY);
+            glDrawArrays(GL_LINE_STRIP, 0, POINTS.length + 1);
 
-        glDrawArrays(GL_LINE_STRIP, 0, POINTS.length + 1);
-
-        glDisableClientState(GL_COLOR_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
+            shader.unbind();
+            glDisableVertexAttribArray(0);
+            glBindVertexArray(0);
+        }
     }
 
     @Override
