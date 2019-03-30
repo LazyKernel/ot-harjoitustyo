@@ -52,7 +52,8 @@ public class Renderer
             return;
         }
 
-        Camera.createProjectionMatrix(800, 600);
+        Camera.createProjectionMatrix(1, 1);
+        Camera.createViewMatrix();
 
         try (MemoryStack stack = stackPush())
         {
@@ -78,7 +79,7 @@ public class Renderer
     public void renderLoop()
     {
         long lastTime = System.nanoTime();
-        final float divisor = 100000.0f;
+        final float divisor = 1000000000.0f;
         while (!glfwWindowShouldClose(pWindow))
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

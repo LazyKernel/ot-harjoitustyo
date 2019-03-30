@@ -6,6 +6,7 @@ import asteroids.core.graphics.Camera;
 import asteroids.core.graphics.shaders.PlayerShader;
 import com.sun.scenario.effect.Merge;
 import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -70,8 +71,7 @@ public class PlayerMesh extends EntityComponent
         shader = new PlayerShader();
         shader.init();
 
-        getTransform().setScale(new Vector2f(200, 200));
-        //getTransform().setPosition(new Vector2f(400, 300));
+        getTransform().setScale(new Vector2f(25, 25));
     }
 
     @Override
@@ -83,9 +83,10 @@ public class PlayerMesh extends EntityComponent
             glEnableVertexAttribArray(0);
             shader.bind();
 
+            Matrix4f transform = getTransform().getTransformMatrix();
+
             glUniform3f(1, color.x, color.y, color.z);
-            glUniformMatrix4fv(2, false, getTransform().getTransformMatrix().get(stack.mallocFloat(16)));
-            glUniformMatrix4fv(3, false, Camera.getProjectionMatrix().get(stack.mallocFloat(16)));
+            glUniformMatrix4fv(2, false, transform.get(stack.mallocFloat(16)));
 
             glDrawArrays(GL_LINE_STRIP, 0, POINTS.length + 1);
 
@@ -111,15 +112,15 @@ public class PlayerMesh extends EntityComponent
         if (KeyboardHandler.isKeyDown(GLFW_KEY_W))
         {
             Vector3f dir = new Vector3f(0.0f, 1.0f, 0.0f);
-            new Matrix3f().rotate(getTransform().getRotation(), 0,0, 1).transform(dir);
-            getTransform().translate(dir);
+            new Matrix3f().rotate(getTransform().getRotation(), 0, 0, 1).transform(dir);
+            getTransform().translate(dir.mul(deltaTime * 400));
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_S))
         {
             Vector3f dir = new Vector3f(0.0f, -1.0f, 0.0f);
             new Matrix3f().rotate(getTransform().getRotation(), 0,0, 1).transform(dir);
-            getTransform().translate(dir);
+            getTransform().translate(dir.mul(deltaTime * 400));
         }
     }
 

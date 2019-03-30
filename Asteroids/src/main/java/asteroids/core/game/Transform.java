@@ -14,12 +14,15 @@ public class Transform
 
     private boolean updated;
 
+    private final float referenceX = 800.0f;
+    private final float referenceY = 600.0f;
+
     public Transform()
     {
         transformMatrix = new Matrix4f();
         position = new Vector3f(0.0f, 0.0f, 1.0f);
         rotation = 0.0f;
-        scale = new Vector3f(1.0f, 1.0f, 1.0f);
+        scale = new Vector3f(100.0f / referenceX, 100.0f / referenceY, 1.0f);
         updated = false;
     }
 
@@ -36,11 +39,11 @@ public class Transform
     }
 
     public Vector2f getPosition() {
-        return new Vector2f(position.x, position.y);
+        return new Vector2f(position.x * referenceX, position.y * referenceY);
     }
 
     public void setPosition(Vector2f position) {
-        this.position = new Vector3f(position.x, position.y, 1.0f);
+        this.position = new Vector3f(position.x / referenceX, position.y / referenceY, 1.0f);
         updated = true;
     }
 
@@ -54,23 +57,23 @@ public class Transform
     }
 
     public Vector2f getScale() {
-        return new Vector2f(scale.x, scale.y);
+        return new Vector2f(scale.x * referenceX, scale.y * referenceY);
     }
 
     public void setScale(Vector2f scale) {
-        this.scale = new Vector3f(scale.x, scale.y, 1.0f);
+        this.scale = new Vector3f(scale.x / referenceX, scale.y / referenceY, 1.0f);
         updated = true;
     }
 
     public void translate(Vector2f vec)
     {
-        position = new Vector3f(position.x + vec.x, position.y + vec.y, 1.0f);
+        position = new Vector3f(position.x + vec.x / referenceX, position.y + vec.y / referenceY, 1.0f);
         updated = true;
     }
 
     public void translate(Vector3f vec)
     {
-        position = new Vector3f(position.x + vec.x, position.y + vec.y, 1.0f);
+        position = new Vector3f(position.x + vec.x / referenceX, position.y + vec.y / referenceY, 1.0f);
         updated = true;
     }
 
@@ -82,17 +85,13 @@ public class Transform
 
     public void scale(Vector2f vec)
     {
-        scale = new Vector3f(position.x + vec.x, position.y + vec.y, 1.0f);
+        scale = new Vector3f(position.x + vec.x / referenceX, position.y + vec.y / referenceY, 1.0f);
         updated = true;
     }
 
     private void updateMatrix()
     {
-        /*this.transformMatrix = new Matrix4f((float)Math.cos(rotation) * scale.x, (float)-Math.sin(rotation), position.x, 0.0f,
-                                            (float)Math.sin(rotation), (float)Math.cos(rotation) * scale.y, position.y, 0.0f,
-                                            0.0f, 0.0f, 1.0f, 0.0f,
-                                            0.0f, 0.0f, 0.0f, 1.0f);*/
-        this.transformMatrix = new Matrix4f().scale(scale).rotateZ(rotation).translate(position);
+        this.transformMatrix = new Matrix4f().translate(position).rotateZ(rotation).scale(scale);
         updated = false;
     }
 }
