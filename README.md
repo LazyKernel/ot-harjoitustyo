@@ -1,5 +1,4 @@
 # Multiplayer Asteroids
-Should be fine.
 ## Features
 * Simple 2 person multiplayer
 * OpenGL (most likely)
@@ -7,13 +6,27 @@ Should be fine.
 * Score data
 * Simple player customization
   
-## Links
+## Linkkejä
 
 [Määrittelydokumentti](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/dokumentointi/m%C3%A4%C3%A4rittelydokumentti.md)
 
 [Työaikakirjanpito](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/dokumentointi/ty%C3%B6aikakirjanpito.md)
 
------
-[Tree](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/laskarit/viikko1/komentorivi.txt)
+## Komentorivi
+### Suorittaminen
+Ohjelman voi suorittaa komennolla
+```
+compile exec:java -Dexec.mainClass=asteroids.Main
+```
 
-[Gitlog](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/laskarit/viikko1/gitlog.txt)
+### Testaus
+Testit voi suorittaa komennolla 
+```
+mvn test
+```
+
+Testikattavuusraportin voi luoda komennolla
+```
+mvn jacoco:report
+```
+Raportti löytyy tiedostosta _target/site/jacoco/index.html_
