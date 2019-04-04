@@ -1,20 +1,32 @@
 package asteroids.core.game.components;
 
 import asteroids.core.game.EntityComponent;
+import asteroids.core.graphics.Mesh;
 import asteroids.core.game.input.KeyboardHandler;
 import org.joml.Matrix3f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
 
 public class Player extends EntityComponent
 {
+    private static final Vector3f[] POINTS = new Vector3f[]{
+            new Vector3f(-0.75f, -1.0f, 0.0f), new Vector3f(0.75f, -1.0f, 0.0f),
+            new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(-0.75f, -1.0f, 0.0f)
+    };
+
+    private Mesh playerMesh;
 
     @Override
     public void init()
     {
-
+        playerMesh = new Mesh();
+        playerMesh.setPoints(POINTS, GL_LINE_STRIP);
+        getTransform().setScale(new Vector2f(25, 25));
+        getParent().addComponent(playerMesh);
     }
 
     @Override
@@ -28,26 +40,26 @@ public class Player extends EntityComponent
     {
         if (KeyboardHandler.isKeyDown(GLFW_KEY_A))
         {
-            getTransform().rotate(-(float)Math.PI * deltaTime);
+            getTransform().rotate((float)Math.PI * deltaTime * 2);
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_D))
         {
-            getTransform().rotate((float)Math.PI * deltaTime);
+            getTransform().rotate(-(float)Math.PI * deltaTime * 2);
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_W))
         {
             Vector3f dir = new Vector3f(0.0f, 1.0f, 0.0f);
             new Matrix3f().rotate(getTransform().getRotation(), 0, 0, 1).transform(dir);
-            getTransform().translate(dir.mul(deltaTime * 400));
+            getTransform().translate(dir.mul(deltaTime * 500));
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_S))
         {
             Vector3f dir = new Vector3f(0.0f, -1.0f, 0.0f);
             new Matrix3f().rotate(getTransform().getRotation(), 0,0, 1).transform(dir);
-            getTransform().translate(dir.mul(deltaTime * 400));
+            getTransform().translate(dir.mul(deltaTime * 500));
         }
     }
 

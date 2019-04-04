@@ -1,7 +1,6 @@
 package asteroids.core.game;
 
 import asteroids.core.game.components.Player;
-import asteroids.core.game.components.PlayerMesh;
 import asteroids.core.graphics.Renderer;
 
 public class Game
@@ -11,9 +10,7 @@ public class Game
     public void init()
     {
         Entity player = new Entity();
-        PlayerMesh mesh = new PlayerMesh();
         Player playerComponent = new Player();
-        player.addComponent(mesh);
         player.addComponent(playerComponent);
         renderer.addEntity(player);
     }

@@ -12,6 +12,11 @@ public abstract class EntityComponent
 
     public abstract void destroy();
 
+    public Entity getParent()
+    {
+        return parent;
+    }
+
     public void setParent(Entity parent)
     {
         this.parent = parent;
