@@ -1,6 +1,6 @@
 package asteroids;
 
-import asteroids.core.game.Game;
+import asteroids.game.Game;
 import asteroids.core.graphics.Renderer;
 
 public class Main

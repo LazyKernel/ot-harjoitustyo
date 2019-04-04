@@ -1,4 +1,4 @@
-package asteroids.core.game;
+package asteroids.game;
 
 import java.util.ArrayList;
 import java.util.List;

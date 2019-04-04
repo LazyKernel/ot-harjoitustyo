@@ -1,4 +1,4 @@
-import asteroids.core.game.Transform;
+import asteroids.game.Transform;
 import org.joml.Vector2f;
 import org.junit.Before;
 import org.junit.Test;

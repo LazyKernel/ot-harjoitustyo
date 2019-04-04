@@ -1,9 +1,7 @@
-package asteroids.core.game.components.rendering;
+package asteroids.core.graphics;
 
-import asteroids.core.game.EntityComponent;
+import asteroids.game.EntityComponent;
 import asteroids.core.graphics.shaders.MeshShader;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryStack;

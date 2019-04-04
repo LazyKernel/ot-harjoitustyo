@@ -1,4 +1,6 @@
 package asteroids.core.networking;
 
-public class NetworkingDao {
+public interface INetworking
+{
+
 }

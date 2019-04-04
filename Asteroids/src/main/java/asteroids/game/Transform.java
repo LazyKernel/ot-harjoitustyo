@@ -1,4 +1,4 @@
-package asteroids.core.game;
+package asteroids.game;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;

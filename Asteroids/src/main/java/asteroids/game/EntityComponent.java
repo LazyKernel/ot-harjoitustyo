@@ -1,4 +1,4 @@
-package asteroids.core.game;
+package asteroids.game;
 
 public abstract class EntityComponent
 {

@@ -1,4 +1,4 @@
-package asteroids.core.game.input;
+package asteroids.core.input;
 
 import org.lwjgl.glfw.GLFWKeyCallback;
 

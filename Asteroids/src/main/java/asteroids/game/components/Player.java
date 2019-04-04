@@ -1,8 +1,8 @@
-package asteroids.core.game.components;
+package asteroids.game.components;
 
-import asteroids.core.game.EntityComponent;
+import asteroids.game.EntityComponent;
 import asteroids.core.graphics.Mesh;
-import asteroids.core.game.input.KeyboardHandler;
+import asteroids.core.input.KeyboardHandler;
 import org.joml.Matrix3f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;

@@ -1,6 +1,6 @@
-package asteroids.core.game;
+package asteroids.game;
 
-import asteroids.core.game.components.Player;
+import asteroids.game.components.Player;
 import asteroids.core.graphics.Renderer;
 
 public class Game

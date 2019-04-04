@@ -1,9 +1,9 @@
 package asteroids.core.graphics;
 
-import asteroids.core.game.Entity;
-import asteroids.core.game.Game;
-import asteroids.core.game.input.KeyboardHandler;
-import org.lwjgl.*;
+import asteroids.game.Entity;
+import asteroids.game.Game;
+import asteroids.game.components.Camera;
+import asteroids.core.input.KeyboardHandler;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;

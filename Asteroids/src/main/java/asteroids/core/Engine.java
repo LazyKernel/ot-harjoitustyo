@@ -1,4 +1,6 @@
 package asteroids.core;
 
-public class Engine {
+public class Engine
+{
+
 }
