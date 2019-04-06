@@ -7,8 +7,7 @@ layout (location = 2) uniform mat4 transform;
 
 out vec3 color;
 
-void main()
-{
+void main() {
     color = customColor;
     gl_Position = transform * vec4(vertPos, 1.0);
 }

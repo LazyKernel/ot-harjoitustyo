@@ -1,11 +1,10 @@
-package asteroids.game;
+package asteroids.core;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public class Transform
-{
+public class Transform {
     private Matrix4f transformMatrix;
 
     private Vector3f position;
@@ -17,8 +16,7 @@ public class Transform
     private final float referenceX = 800.0f;
     private final float referenceY = 600.0f;
 
-    public Transform()
-    {
+    public Transform() {
         transformMatrix = new Matrix4f();
         position = new Vector3f(0.0f, 0.0f, 1.0f);
         rotation = 0.0f;
@@ -27,8 +25,9 @@ public class Transform
     }
 
     public Matrix4f getTransformMatrix() {
-        if (updated)
+        if (updated) {
             updateMatrix();
+        }
 
         return transformMatrix;
     }
@@ -40,6 +39,11 @@ public class Transform
 
     public Vector2f getPosition() {
         return new Vector2f(position.x * referenceX, position.y * referenceY);
+    }
+
+    public void setPosition(Vector3f position) {
+        this.position = new Vector3f(position.x / referenceX, position.y / referenceY, 1.0f);
+        updated = true;
     }
 
     public void setPosition(Vector2f position) {
@@ -65,32 +69,27 @@ public class Transform
         updated = true;
     }
 
-    public void translate(Vector2f vec)
-    {
+    public void translate(Vector2f vec) {
         position = new Vector3f(position.x + vec.x / referenceX, position.y + vec.y / referenceY, 1.0f);
         updated = true;
     }
 
-    public void translate(Vector3f vec)
-    {
+    public void translate(Vector3f vec) {
         position = new Vector3f(position.x + vec.x / referenceX, position.y + vec.y / referenceY, 1.0f);
         updated = true;
     }
 
-    public void rotate(float rotation)
-    {
+    public void rotate(float rotation) {
         this.rotation += rotation;
         updated = true;
     }
 
-    public void scale(Vector2f vec)
-    {
+    public void scale(Vector2f vec) {
         scale = new Vector3f(position.x + vec.x / referenceX, position.y + vec.y / referenceY, 1.0f);
         updated = true;
     }
 
-    private void updateMatrix()
-    {
+    private void updateMatrix() {
         this.transformMatrix = new Matrix4f().translate(position).rotateZ(rotation).scale(scale);
         updated = false;
     }

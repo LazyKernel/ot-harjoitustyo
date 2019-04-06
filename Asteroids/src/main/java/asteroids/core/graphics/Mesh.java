@@ -1,6 +1,6 @@
 package asteroids.core.graphics;
 
-import asteroids.game.EntityComponent;
+import asteroids.core.EntityComponent;
 import asteroids.core.graphics.shaders.MeshShader;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -12,14 +12,13 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-public class Mesh extends EntityComponent
-{
+public class Mesh extends EntityComponent {
     private static final int VERTEX_SIZE = 3;
 
     private int pVBO = 0;
     private int pVAO = 0;
 
-    private MeshShader shader;
+    private MeshShader shader = null;
 
     private Vector3f color = new Vector3f(1.0f, 0.0f, 1.0f);
     private int drawType = GL_LINE_STRIP;
@@ -27,16 +26,13 @@ public class Mesh extends EntityComponent
     private int vertCount = 0;
 
     @Override
-    public void init()
-    {
+    public void init() {
 
     }
 
     @Override
-    public void render()
-    {
-        try (MemoryStack stack = MemoryStack.stackPush())
-        {
+    public void render() {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             glBindVertexArray(pVAO);
             glEnableVertexAttribArray(0);
             shader.bind();
@@ -53,25 +49,26 @@ public class Mesh extends EntityComponent
     }
 
     @Override
-    public void update(float deltaTime)
-    {
+    public void update(float deltaTime) {
 
     }
 
     @Override
-    public void destroy()
-    {
-        if (pVBO != 0)
-        {
+    public void destroy() {
+        if (pVBO != 0) {
             glDeleteBuffers(pVBO);
             pVBO = 0;
         }
 
 
-        if (pVAO != 0)
-        {
+        if (pVAO != 0) {
             glDeleteVertexArrays(pVAO);
             pVAO = 0;
+        }
+
+        if (shader != null) {
+            shader.destroy();
+            shader = null;
         }
     }
 
@@ -99,12 +96,10 @@ public class Mesh extends EntityComponent
         this.points = points;
         vertCount = this.points.length;
 
-        try (MemoryStack stack = MemoryStack.stackPush())
-        {
-            FloatBuffer vertexData = BufferUtils.createFloatBuffer((points.length) * VERTEX_SIZE);
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer vertexData = BufferUtils.createFloatBuffer(vertCount * VERTEX_SIZE);
 
-            for (int i = 0; i < vertCount; i++)
-            {
+            for (int i = 0; i < vertCount; i++) {
                 vertexData.put(this.points[i].get(stack.mallocFloat(VERTEX_SIZE)));
             }
             vertexData.flip();
@@ -124,9 +119,7 @@ public class Mesh extends EntityComponent
 
             glDisableVertexAttribArray(0);
             glBindVertexArray(0);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
 

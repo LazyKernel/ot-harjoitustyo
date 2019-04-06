@@ -59,6 +59,12 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.0</version>
+				<configuration>
+					<excludes>
+						<exclude>asteroids/core/graphics/*</exclude>
+						<exclude>asteroids/core/graphics/shaders/*</exclude>
+					</excludes>
+				</configuration>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
@@ -67,7 +73,21 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>  
+            </plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<configLocation>checkstyle.xml</configLocation>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
         </plugins>
 
     </build>

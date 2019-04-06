@@ -1,7 +1,6 @@
-package asteroids.game;
+package asteroids.core;
 
-public abstract class EntityComponent
-{
+public abstract class EntityComponent {
     protected Entity parent;
 
     public abstract void init();
@@ -12,18 +11,15 @@ public abstract class EntityComponent
 
     public abstract void destroy();
 
-    public Entity getParent()
-    {
+    public Entity getEntity() {
         return parent;
     }
 
-    public void setParent(Entity parent)
-    {
+    public void setEntity(Entity parent) {
         this.parent = parent;
     }
 
-    public Transform getTransform()
-    {
+    public Transform getTransform() {
         return parent.getTransform();
     }
 }
