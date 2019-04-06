@@ -22,4 +22,8 @@ public abstract class EntityComponent {
     public Transform getTransform() {
         return parent.getTransform();
     }
+
+    public void setTransform(Transform t) {
+        parent.setTransform(t);
+    }
 }

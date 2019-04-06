@@ -31,7 +31,7 @@ public class Bullet extends EntityComponent {
         getTransform().translate(forward.mul(deltaTime * 1200));
 
         Vector2f pos = getTransform().getPosition();
-        if (pos.x > 820.0f || pos.x < -20.0f || pos.y > 620.0f || pos.y < -20.0f) {
+        if (pos.x > 820.0f || pos.x < -820.0f || pos.y > 620.0f || pos.y < -620.0f) {
             getEntity().getRenderer().removeEntity(getEntity());
         }
     }

@@ -8,3 +8,4 @@
 | 4.4 | 4 | restrukturointia |
 | 5.4 | 5 | ampumisen lisääminen ja uuden listan luominen, jotta ConcurrentModificationException vältetään |
 | 6.4 | 1 | checkstyle virheiden korjaaminen |
+| | 2 | listan debuggaamista ja nettiosuuden aloittelua |

@@ -23,6 +23,8 @@ public class Renderer {
     private Game game;
     private GLFWKeyCallback keyCallback;
 
+    private boolean isServer = false;
+
     public Renderer(Game game) {
         this.game = game;
         this.game.setRenderer(this);
@@ -134,5 +136,9 @@ public class Renderer {
         }
 
         entities.remove(entityId);
+    }
+
+    public boolean getIsServer() {
+        return isServer;
     }
 }

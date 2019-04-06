@@ -3,18 +3,26 @@ package asteroids.core;
 import java.util.Iterator;
 
 public class ModifiableList<T> implements Iterable<T> {
-    private Object[] objects = new Object[100];
+    private Object[] objects;
     private int counter = 0;
     private int numObjects = 0;
+
+    public ModifiableList() {
+        objects = new Object[100];
+    }
+
+    public ModifiableList(int initialCapacity) {
+        objects = new Object[initialCapacity];
+    }
 
     public void add(T e) {
         if (counter >= objects.length - 1) {
             resizeArray(objects.length * 2);
         }
 
-        if (numObjects <= objects.length / 4) {
+        /*if (numObjects <= objects.length / 4) {
             resizeArray(objects.length / 4);
-        }
+        }*/
 
         int idx = counter++;
         objects[idx] = e;
