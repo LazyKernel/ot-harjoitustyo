@@ -52,9 +52,15 @@ public class Entity {
         component.setEntity(this);
         component.init();
 
-        INetworking networking = getRenderer().getNetworking();
-        if (true) {
-            // TODO: check if component extends INetworked
+        // doing this to fix testing
+        Renderer renderer = getRenderer();
+
+        if (renderer != null)
+        {
+            INetworking networking = renderer.getNetworking();
+            if (true) {
+                // TODO: check if component extends INetworked
+            }
         }
     }
 

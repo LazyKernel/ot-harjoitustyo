@@ -10,3 +10,4 @@
 | 6.4. | 1 | checkstyle virheiden korjaaminen |
 | | 2 | listan debuggaamista ja nettiosuuden aloittelua |
 | 7.4. | 1.5 | nettiosuuden jatkamista |
+| | 0.5 | simppelit testit entitycomponentille |
