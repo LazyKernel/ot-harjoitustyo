@@ -1,13 +1,22 @@
 package asteroids.core.networking;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class INetworking {
-    private boolean isServer = false;
-    private List<INetworked> networkeds = new ArrayList<>();
+    protected boolean isServer = false;
+    protected List<INetworked> networkeds = new ArrayList<>();
+    protected HashMap<Integer, List<Object>> waitingForSerialization = new HashMap<>();
+
+    protected int networkedComponentCounter = 0;
 
     public void addNetworkedComponent(INetworked component) {
+        if (isServer) {
+            component.setNetId(getNewNetId());
+            // TODO: send net id over net
+        }
+
         networkeds.add(component);
     }
 
@@ -23,5 +32,8 @@ public abstract class INetworking {
         return isServer;
     }
 
-    public abstract void update();
+    public abstract void preUpdate(float deltaTime);
+    public abstract void postUpdate(float deltaTime);
+
+    public abstract int getNewNetId();
 }

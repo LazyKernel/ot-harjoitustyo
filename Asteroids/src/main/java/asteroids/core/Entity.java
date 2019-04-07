@@ -1,6 +1,8 @@
 package asteroids.core;
 
 import asteroids.core.graphics.Renderer;
+import asteroids.core.networking.INetworked;
+import asteroids.core.networking.INetworking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,11 @@ public class Entity {
         entityComponents.add(component);
         component.setEntity(this);
         component.init();
+
+        INetworking networking = getRenderer().getNetworking();
+        if (true) {
+            // TODO: check if component extends INetworked
+        }
     }
 
     public <T> List<T> getComponentsOfType(Class<T> type) {

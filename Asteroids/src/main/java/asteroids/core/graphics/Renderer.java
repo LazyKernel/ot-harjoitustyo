@@ -2,6 +2,7 @@ package asteroids.core.graphics;
 
 import asteroids.core.Entity;
 import asteroids.core.ModifiableList;
+import asteroids.core.networking.INetworking;
 import asteroids.game.Game;
 import asteroids.game.components.Camera;
 import asteroids.core.input.KeyboardHandler;
@@ -22,12 +23,14 @@ public class Renderer {
     private ModifiableList<Entity> entities = new ModifiableList<>();
     private Game game;
     private GLFWKeyCallback keyCallback;
+    private INetworking networking;
 
     private boolean isServer = false;
 
-    public Renderer(Game game) {
+    public Renderer(Game game, INetworking networking) {
         this.game = game;
         this.game.setRenderer(this);
+        this.networking = networking;
     }
 
     public void init() {
@@ -78,6 +81,7 @@ public class Renderer {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             float delta = (System.nanoTime() - lastTime) / divisor;
+            networking.preUpdate(delta);
             game.update();
             for (Entity e : entities) {
                 if (e == null) {
@@ -86,6 +90,7 @@ public class Renderer {
 
                 e.update(delta);
             }
+            networking.postUpdate(delta);
             lastTime = System.nanoTime();
 
             game.render();
@@ -140,5 +145,9 @@ public class Renderer {
 
     public boolean getIsServer() {
         return isServer;
+    }
+
+    public INetworking getNetworking() {
+        return networking;
     }
 }

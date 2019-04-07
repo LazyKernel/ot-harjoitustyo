@@ -16,7 +16,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
 import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
 
-public class Player extends EntityComponent implements INetworked {
+public class Player extends INetworked {
     private static final Vector3f[] POINTS = new Vector3f[]{ new Vector3f(-0.75f, -1.0f, 0.0f), new Vector3f(0.75f, -1.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(-0.75f, -1.0f, 0.0f) };
     private Mesh playerMesh;
     private int inputFlags = 0;
@@ -37,46 +37,29 @@ public class Player extends EntityComponent implements INetworked {
     @Override
     public void update(float deltaTime) {
         if (KeyboardHandler.isKeyDown(GLFW_KEY_A)) {
-            getTransform().rotate((float) Math.PI * deltaTime * 2);
+            handleInput(0x1, deltaTime);
             inputFlags |= 0x1;
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_D)) {
-            getTransform().rotate(-(float) Math.PI * deltaTime * 2);
+            handleInput(0x2, deltaTime);
             inputFlags |= 0x2;
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_W)) {
-            Vector3f dir = new Vector3f(0.0f, 1.0f, 0.0f);
-            new Matrix3f().rotate(getTransform().getRotation(), 0, 0, 1).transform(dir);
-            getTransform().translate(dir.mul(deltaTime * 500));
+            handleInput(0x4, deltaTime);
             inputFlags |= 0x4;
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_S)) {
-            Vector3f dir = new Vector3f(0.0f, -1.0f, 0.0f);
-            new Matrix3f().rotate(getTransform().getRotation(), 0, 0, 1).transform(dir);
-            getTransform().translate(dir.mul(deltaTime * 500));
+            handleInput(0x8, deltaTime);
             inputFlags |= 0x8;
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_SPACE)) {
-            Vector2f pos = getTransform().getPosition();
-            Vector2f scale = getTransform().getScale();
-            float rotation = getTransform().getRotation();
-
-            Vector3f spawnPos = new Vector3f(0.0f, scale.y, 1.0f);
-            spawnPos.rotateZ(rotation);
-            spawnPos.add(pos.x, pos.y, 0.0f);
-
-            Entity bulletEntity = new Entity();
-            bulletEntity.addComponent(new Bullet());
-
-            bulletEntity.getTransform().setPosition(spawnPos);
-            bulletEntity.getTransform().setRotation(getTransform().getRotation());
-            getEntity().getRenderer().addEntity(bulletEntity);
+            shoot();
             inputFlags |= 0xF;
-    }
+        }
     }
 
     @Override
@@ -86,8 +69,13 @@ public class Player extends EntityComponent implements INetworked {
 
     @Override
     public void netSerialize(List<Object> objects, boolean isServer) {
-        objects.add(inputFlags);
-        inputFlags = 0;
+        if (isServer) {
+            objects.add(getTransform());
+        }
+        else {
+            objects.add(inputFlags);
+            inputFlags = 0;
+        }
     }
 
     @Override
@@ -98,8 +86,51 @@ public class Player extends EntityComponent implements INetworked {
             }
 
             if (isServer && o.getClass() == int.class) {
-
+                handleInput(inputFlags, deltaTime);
             }
         }
+    }
+
+    private void handleInput(int inputFlags, float deltaTime) {
+        if ((inputFlags & 0x1) != 0) {
+            getTransform().rotate((float) Math.PI * deltaTime * 2);
+        }
+
+        if ((inputFlags & 0x2) != 0) {
+            getTransform().rotate(-(float) Math.PI * deltaTime * 2);
+        }
+
+        if ((inputFlags & 0x4) != 0) {
+            Vector3f dir = new Vector3f(0.0f, 1.0f, 0.0f);
+            new Matrix3f().rotate(getTransform().getRotation(), 0, 0, 1).transform(dir);
+            getTransform().translate(dir.mul(deltaTime * 500));
+        }
+
+        if ((inputFlags & 0x8) != 0) {
+            Vector3f dir = new Vector3f(0.0f, -1.0f, 0.0f);
+            new Matrix3f().rotate(getTransform().getRotation(), 0, 0, 1).transform(dir);
+            getTransform().translate(dir.mul(deltaTime * 500));
+        }
+
+        if ((inputFlags & 0xF) != 0) {
+            shoot();
+        }
+    }
+
+    private void shoot() {
+        Vector2f pos = getTransform().getPosition();
+        Vector2f scale = getTransform().getScale();
+        float rotation = getTransform().getRotation();
+
+        Vector3f spawnPos = new Vector3f(0.0f, scale.y, 1.0f);
+        spawnPos.rotateZ(rotation);
+        spawnPos.add(pos.x, pos.y, 0.0f);
+
+        Entity bulletEntity = new Entity();
+        bulletEntity.addComponent(new Bullet());
+
+        bulletEntity.getTransform().setPosition(spawnPos);
+        bulletEntity.getTransform().setRotation(getTransform().getRotation());
+        getEntity().getRenderer().addEntity(bulletEntity);
     }
 }
