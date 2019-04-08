@@ -4,7 +4,6 @@ import asteroids.core.game.EntityComponent;
 import asteroids.core.game.input.KeyboardHandler;
 import asteroids.core.graphics.Camera;
 import asteroids.core.graphics.shaders.PlayerShader;
-import com.sun.scenario.effect.Merge;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
