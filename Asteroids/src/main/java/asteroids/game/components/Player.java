@@ -1,8 +1,7 @@
 package asteroids.game.components;
 
-import asteroids.core.Entity;
-import asteroids.core.EntityComponent;
-import asteroids.core.Transform;
+import asteroids.core.containers.Entity;
+import asteroids.core.containers.Transform;
 import asteroids.core.graphics.Mesh;
 import asteroids.core.input.KeyboardHandler;
 import asteroids.core.networking.INetworked;
@@ -56,9 +55,9 @@ public class Player extends INetworked {
             inputFlags |= 0x8;
         }
 
-        if (KeyboardHandler.isKeyDown(GLFW_KEY_SPACE)) {
+        if (KeyboardHandler.isKeyPressed(GLFW_KEY_SPACE)) {
             shoot();
-            inputFlags |= 0xF;
+            inputFlags |= 0x10;
         }
     }
 
@@ -71,8 +70,7 @@ public class Player extends INetworked {
     public void netSerialize(List<Object> objects, boolean isServer) {
         if (isServer) {
             objects.add(getTransform());
-        }
-        else {
+        } else {
             objects.add(inputFlags);
             inputFlags = 0;
         }
@@ -82,7 +80,7 @@ public class Player extends INetworked {
     public void netDeserialize(List<Object> objects, float deltaTime, boolean isServer) {
         for (Object o : objects) {
             if (o.getClass() == Transform.class) {
-                setTransform((Transform)o);
+                setTransform((Transform) o);
             }
 
             if (isServer && o.getClass() == int.class) {
@@ -112,7 +110,7 @@ public class Player extends INetworked {
             getTransform().translate(dir.mul(deltaTime * 500));
         }
 
-        if ((inputFlags & 0xF) != 0) {
+        if ((inputFlags & 0x10) != 0) {
             shoot();
         }
     }

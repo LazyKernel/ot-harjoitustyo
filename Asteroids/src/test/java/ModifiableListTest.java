@@ -1,5 +1,5 @@
-import asteroids.core.Entity;
-import asteroids.core.ModifiableList;
+import asteroids.core.containers.Entity;
+import asteroids.core.containers.ModifiableList;
 import org.junit.Before;
 import org.junit.Test;
 

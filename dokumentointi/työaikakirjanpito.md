@@ -11,3 +11,6 @@
 | | 2 | listan debuggaamista ja nettiosuuden aloittelua |
 | 7.4. | 1.5 | nettiosuuden jatkamista |
 | | 0.5 | simppelit testit entitycomponentille |
+| 9.4. | 2 | offline networkingin korjaaminen |
+| | 2 |	arkkitehtuuritiedoston tekeminen |
+| yht | 27 |

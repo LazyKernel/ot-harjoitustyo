@@ -1,6 +1,6 @@
 package asteroids.game;
 
-import asteroids.core.Entity;
+import asteroids.core.containers.Entity;
 import asteroids.game.components.Player;
 import asteroids.core.graphics.Renderer;
 

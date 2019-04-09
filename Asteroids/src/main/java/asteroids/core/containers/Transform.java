@@ -1,4 +1,4 @@
-package asteroids.core;
+package asteroids.core.containers;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;

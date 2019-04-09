@@ -1,4 +1,4 @@
-package asteroids.core;
+package asteroids.core.containers;
 
 import asteroids.core.graphics.Renderer;
 import asteroids.core.networking.INetworked;
@@ -39,6 +39,7 @@ public class Entity {
                 continue;
             }
 
+            removeNetworkedComponentIfPossible(c);
             c.destroy();
         }
 
@@ -53,11 +54,10 @@ public class Entity {
         // doing this to fix testing
         Renderer renderer = getRenderer();
 
-        if (renderer != null)
-        {
+        if (renderer != null) {
             INetworking networking = renderer.getNetworking();
             if (INetworked.class.isAssignableFrom(component.getClass())) {
-                networking.addNetworkedComponent((INetworked)component);
+                networking.addNetworkedComponent((INetworked) component);
             }
         }
     }
@@ -99,5 +99,16 @@ public class Entity {
 
     public int getEntityId() {
         return entityId;
+    }
+
+    private void removeNetworkedComponentIfPossible(EntityComponent component) {
+        Renderer renderer = getRenderer();
+
+        if (renderer != null) {
+            INetworking networking = renderer.getNetworking();
+            if (INetworked.class.isAssignableFrom(component.getClass())) {
+                networking.removeNetworkedComponent((INetworked) component);
+            }
+        }
     }
 }

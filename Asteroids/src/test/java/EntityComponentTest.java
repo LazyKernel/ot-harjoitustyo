@@ -1,6 +1,6 @@
-import asteroids.core.Entity;
-import asteroids.core.EntityComponent;
-import asteroids.core.Transform;
+import asteroids.core.containers.Entity;
+import asteroids.core.containers.EntityComponent;
+import asteroids.core.containers.Transform;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,6 +44,8 @@ public class EntityComponentTest
 
     @Test
     public void testTransformGetterSetter() {
+        Entity entity = new Entity();
+        entityComponent.setEntity(entity);
         Transform t = new Transform();
         entityComponent.setTransform(t);
         assertEquals(t, entityComponent.getTransform());

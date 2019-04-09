@@ -1,6 +1,6 @@
 package asteroids.game.components;
 
-import asteroids.core.Transform;
+import asteroids.core.containers.Transform;
 import asteroids.core.graphics.Mesh;
 import asteroids.core.networking.INetworked;
 import org.joml.Vector2f;
@@ -39,9 +39,9 @@ public class Bullet extends INetworked {
             Vector2f pos = getTransform().getPosition();
             if (pos.x > 820.0f || pos.x < -820.0f || pos.y > 620.0f || pos.y < -620.0f) {
                 shouldBeRemoved = true;
+                getEntity().getRenderer().getNetworking().queueForRemoval(this);
             }
-        }
-        else if (shouldBeRemoved) {
+        } else if (shouldBeRemoved) {
             getEntity().getRenderer().removeEntity(getEntity());
         }
     }
@@ -68,8 +68,7 @@ public class Bullet extends INetworked {
             for (Object o : objects) {
                 if (o.getClass() == boolean.class) {
                     shouldBeRemoved = (boolean) o;
-                }
-                else if (o.getClass() == Transform.class) {
+                } else if (o.getClass() == Transform.class) {
                     setTransform((Transform) o);
                 }
             }

@@ -1,6 +1,6 @@
 package asteroids.core.networking;
 
-import asteroids.core.EntityComponent;
+import asteroids.core.containers.EntityComponent;
 
 import java.util.List;
 

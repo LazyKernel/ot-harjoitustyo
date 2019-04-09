@@ -9,6 +9,8 @@ public abstract class INetworking {
     protected List<INetworked> networkeds = new ArrayList<>();
     protected HashMap<Integer, List<Object>> waitingForSerialization = new HashMap<>();
 
+    protected List<INetworked> queuedForRemoval = new ArrayList<>();
+
     protected int networkedComponentCounter = 0;
 
     public void addNetworkedComponent(INetworked component) {
@@ -18,6 +20,18 @@ public abstract class INetworking {
         }
 
         networkeds.add(component);
+    }
+
+    // server cant remove components before sending the message to clients
+    public void queueForRemoval(INetworked component) {
+        queuedForRemoval.add(component);
+    }
+
+    protected void removeQueuedComponents() {
+        for (INetworked n : queuedForRemoval) {
+            n.getEntity().getRenderer().removeEntity(n.getEntity());
+        }
+        queuedForRemoval.clear();
     }
 
     public void removeNetworkedComponent(INetworked component) {

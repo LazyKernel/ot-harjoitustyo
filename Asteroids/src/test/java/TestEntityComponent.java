@@ -1,4 +1,4 @@
-import asteroids.core.EntityComponent;
+import asteroids.core.containers.EntityComponent;
 
 public class TestEntityComponent extends EntityComponent
 {

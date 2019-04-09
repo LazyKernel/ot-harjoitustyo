@@ -1,4 +1,4 @@
-package asteroids.core;
+package asteroids.core.containers;
 
 public abstract class EntityComponent {
     protected Entity parent;

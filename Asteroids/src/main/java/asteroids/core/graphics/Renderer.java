@@ -1,10 +1,9 @@
 package asteroids.core.graphics;
 
-import asteroids.core.Entity;
-import asteroids.core.ModifiableList;
+import asteroids.core.containers.Entity;
+import asteroids.core.containers.ModifiableList;
 import asteroids.core.networking.INetworking;
 import asteroids.game.Game;
-import asteroids.game.components.Camera;
 import asteroids.core.input.KeyboardHandler;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -27,8 +26,6 @@ public class Renderer {
 
     private static Renderer renderer = null;
 
-    private boolean isServer = false;
-
     public Renderer(Game game, INetworking networking) {
         this.game = game;
         this.game.setRenderer(this);
@@ -48,15 +45,13 @@ public class Renderer {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // keep the window hidden till we're done moving and setting it up
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_SAMPLES, 4); // 4x MSAA
 
         pWindow = glfwCreateWindow(800, 600, "Asteroids", NULL, NULL);
         if (pWindow == NULL) {
             System.err.println("Failed to create a GLFW window.");
             return;
         }
-
-        Camera.createProjectionMatrix(1, 1);
-        Camera.createViewMatrix();
 
         try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1);
@@ -147,7 +142,7 @@ public class Renderer {
     }
 
     public boolean getIsServer() {
-        return isServer;
+        return networking.getIsServer();
     }
 
     public INetworking getNetworking() {

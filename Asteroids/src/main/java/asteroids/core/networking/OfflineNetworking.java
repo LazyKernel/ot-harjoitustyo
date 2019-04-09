@@ -5,6 +5,10 @@ import java.util.List;
 
 public class OfflineNetworking extends INetworking {
 
+    public OfflineNetworking() {
+        isServer = true;
+    }
+
     @Override
     public void preUpdate(float deltaTime) {
         waitingForSerialization.clear();
@@ -47,6 +51,8 @@ public class OfflineNetworking extends INetworking {
                 n.netDeserialize(list, deltaTime, false);
             }
         }
+
+        removeQueuedComponents();
     }
 
     @Override

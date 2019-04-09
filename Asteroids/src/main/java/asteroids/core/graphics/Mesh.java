@@ -1,6 +1,6 @@
 package asteroids.core.graphics;
 
-import asteroids.core.EntityComponent;
+import asteroids.core.containers.EntityComponent;
 import asteroids.core.graphics.shaders.MeshShader;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -35,6 +35,7 @@ public class Mesh extends EntityComponent {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             glBindVertexArray(pVAO);
             glEnableVertexAttribArray(0);
+            glEnable(GL_MULTISAMPLE);
             shader.bind();
 
             glUniform3f(1, color.x, color.y, color.z);
@@ -43,6 +44,7 @@ public class Mesh extends EntityComponent {
             glDrawArrays(drawType, 0, vertCount);
 
             shader.unbind();
+            glDisable(GL_MULTISAMPLE);
             glDisableVertexAttribArray(0);
             glBindVertexArray(0);
         }

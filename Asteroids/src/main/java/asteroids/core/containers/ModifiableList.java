@@ -1,4 +1,4 @@
-package asteroids.core;
+package asteroids.core.containers;
 
 import java.util.Iterator;
 

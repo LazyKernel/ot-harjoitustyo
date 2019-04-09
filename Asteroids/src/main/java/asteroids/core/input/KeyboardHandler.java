@@ -11,8 +11,8 @@ public class KeyboardHandler extends GLFWKeyCallback {
 
     @Override
     public void invoke(long pWindow, int key, int scanCode, int action, int modifiers) {
+        keysPress[key] = action == GLFW_PRESS;
         keysHold[key] = action != GLFW_RELEASE;
-        keysPress[key] = action != GLFW_PRESS;
     }
 
     public static boolean isKeyDown(int key) {
@@ -20,6 +20,8 @@ public class KeyboardHandler extends GLFWKeyCallback {
     }
 
     public static boolean isKeyPressed(int key) {
-        return keysPress[key];
+        boolean ret = keysPress[key];
+        keysPress[key] = false;
+        return ret;
     }
 }
