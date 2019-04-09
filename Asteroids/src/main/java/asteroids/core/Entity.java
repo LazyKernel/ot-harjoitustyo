@@ -11,8 +11,6 @@ public class Entity {
     private ModifiableList<EntityComponent> entityComponents = new ModifiableList<>(5);
     private Transform transform = new Transform();
 
-    private Renderer renderer;
-
     private int entityId = -1;
 
     public void render() {
@@ -58,8 +56,8 @@ public class Entity {
         if (renderer != null)
         {
             INetworking networking = renderer.getNetworking();
-            if (true) {
-                // TODO: check if component extends INetworked
+            if (INetworked.class.isAssignableFrom(component.getClass())) {
+                networking.addNetworkedComponent((INetworked)component);
             }
         }
     }
@@ -92,11 +90,7 @@ public class Entity {
     }
 
     public Renderer getRenderer() {
-        return renderer;
-    }
-
-    public void setRenderer(Renderer renderer) {
-        this.renderer = renderer;
+        return Renderer.getRenderer();
     }
 
     public void setEntityId(int id) {

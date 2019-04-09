@@ -25,6 +25,8 @@ public class Renderer {
     private GLFWKeyCallback keyCallback;
     private INetworking networking;
 
+    private static Renderer renderer = null;
+
     private boolean isServer = false;
 
     public Renderer(Game game, INetworking networking) {
@@ -34,6 +36,8 @@ public class Renderer {
     }
 
     public void init() {
+        renderer = this;
+
         GLFWErrorCallback.createPrint(System.err).set();
 
         if (!glfwInit()) {
@@ -125,7 +129,6 @@ public class Renderer {
     }
 
     public void addEntity(Entity entity) {
-        entity.setRenderer(this);
         entities.add(entity);
     }
 
@@ -149,5 +152,9 @@ public class Renderer {
 
     public INetworking getNetworking() {
         return networking;
+    }
+
+    public static Renderer getRenderer() {
+        return renderer;
     }
 }
