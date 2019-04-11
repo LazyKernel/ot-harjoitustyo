@@ -12,13 +12,11 @@ import java.util.List;
 
 public class ServerNetworking extends INetworking {
 
-    private static final int serverId = 0; // server is always 0
-
     private float lastDelta = 0.0f;
 
     private Server server = new Server();
 
-    private HashMap<Integer, Integer> ownerMap = new HashMap<>(); // netId -> owner connection id
+    private HashMap<Integer, Connection> ownerMap = new HashMap<>(); // netId -> owner connection
 
     public ServerNetworking() {
         isServer = true;
@@ -37,7 +35,7 @@ public class ServerNetworking extends INetworking {
             public void received(Connection connection, Object object) {
                 if (object instanceof NetPacket) {
                     NetPacket packet = (NetPacket) object;
-                    handlePacket(packet);
+                    handlePacket(packet, connection);
                 }
             }
         });
@@ -55,19 +53,17 @@ public class ServerNetworking extends INetworking {
             n.netSerialize(list, true);
 
             for (Object o : list) {
-                Integer receiver = ownerMap.get(n.getNetId());
+                Connection receiver = ownerMap.get(n.getNetId());
 
                 if (receiver == null) {
                     continue;
                 }
 
                 NetPacket packet = new NetPacket();
-                packet.senderId = serverId;
                 packet.netID = n.getNetId();
                 packet.entityId = n.getEntity().getEntityId();
-                packet.receiverId = receiver;
                 packet.data = o;
-                sendPacket(packet);
+                receiver.sendUDP(packet);
             }
         }
     }
@@ -82,11 +78,12 @@ public class ServerNetworking extends INetworking {
         return false;
     }
 
-    private void handlePacket(NetPacket packet) {
-        // TODO: verify that the owner is actually the owner of the entity
+    private void handlePacket(NetPacket packet, Connection connection) {
         if (packet.netID < 0) {
             return;
         }
+
+        // TODO: check if is actually the owner
 
         Entity e = getRenderer().getEntity(packet.entityId);
 
@@ -101,10 +98,5 @@ public class ServerNetworking extends INetworking {
                 }
             }
         }
-    }
-
-    private void sendPacket(NetPacket packet) {
-        Connection connection = server.getConnections()[packet.receiverId];
-        connection.sendUDP(packet);
     }
 }
