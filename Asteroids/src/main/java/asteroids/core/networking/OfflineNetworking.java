@@ -10,6 +10,11 @@ public class OfflineNetworking extends INetworking {
     }
 
     @Override
+    public void init() {
+
+    }
+
+    @Override
     public void preUpdate(float deltaTime) {
         waitingForSerialization.clear();
 
@@ -58,5 +63,10 @@ public class OfflineNetworking extends INetworking {
     @Override
     public int getNewNetId() {
         return networkedComponentCounter++;
+    }
+
+    @Override
+    public boolean isOffline() {
+        return true;
     }
 }

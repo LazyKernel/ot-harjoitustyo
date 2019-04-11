@@ -30,10 +30,15 @@ public class Renderer {
         this.game = game;
         this.game.setRenderer(this);
         this.networking = networking;
+        networking.setRenderer(this);
     }
 
     public void init() {
         renderer = this;
+
+        if (getIsServer() && !getIsOffline()) {
+            return;
+        }
 
         GLFWErrorCallback.createPrint(System.err).set();
 
@@ -74,6 +79,11 @@ public class Renderer {
     }
 
     public void renderLoop() {
+        if (getIsServer() && !getIsOffline()) {
+            renderLoopServer();
+            return;
+        }
+
         long lastTime = System.nanoTime();
         final float divisor = 1000000000.0f;
         while (!glfwWindowShouldClose(pWindow)) {
@@ -106,6 +116,31 @@ public class Renderer {
         }
     }
 
+    public void renderLoopServer() {
+        long lastTime = System.nanoTime();
+        final float divisor = 1000000000.0f;
+        while (true) {
+            float delta = (System.nanoTime() - lastTime) / divisor;
+            networking.preUpdate(delta);
+            game.update();
+            for (Entity e : entities) {
+                if (e == null) {
+                    continue;
+                }
+
+                e.update(delta);
+            }
+            networking.postUpdate(delta);
+            lastTime = System.nanoTime();
+
+            try {
+                Thread.sleep(16);
+            } catch (InterruptedException e) {
+                System.out.println("Main thread interrupted.");
+            }
+        }
+    }
+
     public void cleanUp() {
         game.destroy();
 
@@ -117,6 +152,10 @@ public class Renderer {
             e.destroy();
         }
 
+        if (getIsServer() && !getIsOffline()) {
+            return;
+        }
+
         glfwFreeCallbacks(pWindow);
         glfwDestroyWindow(pWindow);
         glfwTerminate();
@@ -125,6 +164,10 @@ public class Renderer {
 
     public void addEntity(Entity entity) {
         entities.add(entity);
+    }
+
+    public Entity getEntity(int entityId) {
+        return entities.get(entityId);
     }
 
     public void removeEntity(Entity entity) {
@@ -143,6 +186,10 @@ public class Renderer {
 
     public boolean getIsServer() {
         return networking.getIsServer();
+    }
+
+    public boolean getIsOffline() {
+        return networking.isOffline();
     }
 
     public INetworking getNetworking() {

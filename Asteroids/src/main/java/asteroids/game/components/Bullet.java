@@ -18,10 +18,13 @@ public class Bullet extends INetworked {
 
     @Override
     public void init() {
-        bulletMesh = new Mesh();
-        bulletMesh.setPoints(POINTS, GL_LINES);
+        if (!getEntity().getRenderer().getIsServer() || getEntity().getRenderer().getIsOffline()) {
+            bulletMesh = new Mesh();
+            bulletMesh.setPoints(POINTS, GL_LINES);
+            getEntity().addComponent(bulletMesh);
+        }
+
         getTransform().setScale(new Vector2f(10, 10));
-        getEntity().addComponent(bulletMesh);
     }
 
     @Override
@@ -66,9 +69,9 @@ public class Bullet extends INetworked {
     public void netDeserialize(List<Object> objects, float deltaTime, boolean isServer) {
         if (!isServer) {
             for (Object o : objects) {
-                if (o.getClass() == boolean.class) {
+                if (o instanceof Boolean) {
                     shouldBeRemoved = (boolean) o;
-                } else if (o.getClass() == Transform.class) {
+                } else if (o instanceof Transform) {
                     setTransform((Transform) o);
                 }
             }

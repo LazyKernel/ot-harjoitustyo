@@ -22,10 +22,13 @@ public class Player extends INetworked {
 
     @Override
     public void init() {
-        playerMesh = new Mesh();
-        playerMesh.setPoints(POINTS, GL_LINE_STRIP);
+        if (!getEntity().getRenderer().getIsServer() || getEntity().getRenderer().getIsOffline()) {
+            playerMesh = new Mesh();
+            playerMesh.setPoints(POINTS, GL_LINE_STRIP);
+            getEntity().addComponent(playerMesh);
+        }
+
         getTransform().setScale(new Vector2f(25, 25));
-        getEntity().addComponent(playerMesh);
     }
 
     @Override
@@ -79,11 +82,11 @@ public class Player extends INetworked {
     @Override
     public void netDeserialize(List<Object> objects, float deltaTime, boolean isServer) {
         for (Object o : objects) {
-            if (o.getClass() == Transform.class) {
+            if (o instanceof Transform) {
                 setTransform((Transform) o);
             }
 
-            if (isServer && o.getClass() == int.class) {
+            if (isServer && o instanceof Integer) {
                 handleInput(inputFlags, deltaTime);
             }
         }
