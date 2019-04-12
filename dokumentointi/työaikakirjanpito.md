@@ -13,5 +13,6 @@
 | | 0.5 | simppelit testit entitycomponentille |
 | 9.4. | 2 | offline networkingin korjaaminen |
 | | 2 |	arkkitehtuuritiedoston tekeminen |
-| 11.4 | 2 | serverin koodaamista |
+| 11.4. | 2 | serverin koodaamista |
+| 12.4. | 3 | clientin networkingin koodaamista |
 | yht | ? |

@@ -22,7 +22,7 @@ public class Player extends INetworked {
 
     @Override
     public void init() {
-        if (!getEntity().getRenderer().getIsServer() || getEntity().getRenderer().getIsOffline()) {
+        if (!getEntity().getRenderer().getIsHeadlessServer()) {
             playerMesh = new Mesh();
             playerMesh.setPoints(POINTS, GL_LINE_STRIP);
             getEntity().addComponent(playerMesh);

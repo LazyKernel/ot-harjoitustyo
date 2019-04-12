@@ -4,6 +4,7 @@ import asteroids.core.containers.Entity;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import sun.nio.ch.Net;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,8 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ServerNetworking extends INetworking {
-
-    private float lastDelta = 0.0f;
 
     private Server server = new Server();
 
@@ -26,7 +25,7 @@ public class ServerNetworking extends INetworking {
     public void init() {
         server.start();
         try {
-            server.bind(55555, 55556);
+            server.bind(portTCP, portUDP);
         } catch (IOException e) {
             System.out.println("Error while trying to bind to a port.\n" + e.getMessage());
         }
@@ -79,11 +78,17 @@ public class ServerNetworking extends INetworking {
     }
 
     private void handlePacket(NetPacket packet, Connection connection) {
-        if (packet.netID < 0) {
+        if (packet.netID < 0 || packet.entityId < 0) {
             return;
         }
 
         // TODO: check if is actually the owner
+
+        if (packet.isNetRequest) {
+            if (packet.data instanceof String) {
+                handleStringPacket((String) packet.data, connection);
+            }
+        }
 
         Entity e = getRenderer().getEntity(packet.entityId);
 
@@ -95,8 +100,30 @@ public class ServerNetworking extends INetworking {
                     List<Object> list = new ArrayList<>();
                     list.add(packet.data);
                     n.netDeserialize(list, lastDelta, true);
+                    break;
                 }
             }
         }
+    }
+
+    private void handleStringPacket(String data, Connection connection) {
+        switch (data) {
+            case "connect":
+                sendStateToConnectedClient(connection);
+                break;
+        }
+    }
+
+    private void sendStateToConnectedClient(Connection connection) {
+        for (INetworked n : networkeds) {
+            sendNewEntity(n.getEntity(), connection);
+        }
+    }
+
+    private void sendNewEntity(Entity entity, Connection connection) {
+        NetPacket packet = new NetPacket();
+        packet.isNetRequest = true;
+        packet.data = "e;" + encodeEntity(entity);
+        connection.sendTCP(packet);
     }
 }

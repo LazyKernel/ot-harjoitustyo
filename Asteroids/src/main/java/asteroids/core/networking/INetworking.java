@@ -1,12 +1,20 @@
 package asteroids.core.networking;
 
+import asteroids.core.containers.Entity;
 import asteroids.core.graphics.Renderer;
+import asteroids.game.components.Bullet;
+import asteroids.game.components.Player;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Spliterator;
 
 public abstract class INetworking {
+    final int portTCP = 55555;
+    final int portUDP = 55556;
+
     protected boolean isServer = false;
     protected List<INetworked> networkeds = new ArrayList<>();
     protected HashMap<Integer, List<Object>> waitingForSerialization = new HashMap<>();
@@ -16,6 +24,8 @@ public abstract class INetworking {
     protected int networkedComponentCounter = 0;
 
     private Renderer renderer;
+
+    protected float lastDelta = 0.0f;
 
     public void addNetworkedComponent(INetworked component) {
         if (isServer) {
@@ -66,4 +76,38 @@ public abstract class INetworking {
     public abstract void postUpdate(float deltaTime);
 
     public abstract int getNewNetId();
+
+    protected String encodeEntity(Entity e) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(e.getEntityId());
+
+        List<INetworked> list = e.getComponentsOfType(INetworked.class);
+        for (INetworked n : list) {
+            builder.append(";").append(n.getClass().getSuperclass().getTypeName()).append(";").append(n.getNetId());
+        }
+
+        return builder.toString();
+    }
+
+    protected Entity decodeEntity(String data) {
+        String[] split = data.split(";");
+        Entity e = new Entity();
+        e.setEntityId(Integer.parseInt(split[0]));
+
+        for (int i = 1; i < split.length; i += 2) {
+            try {
+                INetworked n = (INetworked) Class.forName(split[i]).newInstance();
+                n.setNetId(Integer.parseInt(split[i+1]));
+                e.addComponent(n);
+            } catch (ClassNotFoundException ex) {
+                System.out.println("Class not found.\n" + ex.getMessage());
+            } catch (InstantiationException ex) {
+                System.out.println("Couldn't instantiate class.\n" + ex.getMessage());
+            } catch (IllegalAccessException ex) {
+                System.out.println("Couldn't access class.\n" + ex.getMessage());
+            }
+        }
+
+        return e;
+    }
 }

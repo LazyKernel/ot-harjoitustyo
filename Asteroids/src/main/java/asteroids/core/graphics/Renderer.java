@@ -36,7 +36,7 @@ public class Renderer {
     public void init() {
         renderer = this;
 
-        if (getIsServer() && !getIsOffline()) {
+        if (getIsHeadlessServer()) {
             return;
         }
 
@@ -79,7 +79,7 @@ public class Renderer {
     }
 
     public void renderLoop() {
-        if (getIsServer() && !getIsOffline()) {
+        if (getIsHeadlessServer()) {
             renderLoopServer();
             return;
         }
@@ -190,6 +190,10 @@ public class Renderer {
 
     public boolean getIsOffline() {
         return networking.isOffline();
+    }
+
+    public boolean getIsHeadlessServer() {
+        return getIsServer() && !getIsOffline();
     }
 
     public INetworking getNetworking() {
