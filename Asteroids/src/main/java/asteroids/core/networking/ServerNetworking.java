@@ -3,8 +3,6 @@ package asteroids.core.networking;
 import asteroids.core.containers.Entity;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryonet.Server;
-import sun.nio.ch.Net;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ServerNetworking extends INetworking {
-
-    private Server server = new Server();
 
     private HashMap<Integer, Connection> ownerMap = new HashMap<>(); // netId -> owner connection
 

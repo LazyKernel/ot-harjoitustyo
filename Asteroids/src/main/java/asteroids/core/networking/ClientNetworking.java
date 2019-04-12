@@ -12,8 +12,6 @@ import java.util.List;
 
 public class ClientNetworking extends INetworking {
 
-    Client client = new Client();
-
     @Override
     public boolean isOffline() {
         return false;

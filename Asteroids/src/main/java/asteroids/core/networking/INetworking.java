@@ -2,18 +2,19 @@ package asteroids.core.networking;
 
 import asteroids.core.containers.Entity;
 import asteroids.core.graphics.Renderer;
-import asteroids.game.components.Bullet;
-import asteroids.game.components.Player;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Server;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Spliterator;
 
 public abstract class INetworking {
     final int portTCP = 55555;
     final int portUDP = 55556;
+
+    protected Server server = new Server();
+    protected Client client = new Client();
 
     protected boolean isServer = false;
     protected List<INetworked> networkeds = new ArrayList<>();
@@ -26,6 +27,10 @@ public abstract class INetworking {
     private Renderer renderer;
 
     protected float lastDelta = 0.0f;
+
+    public INetworking() {
+        registerClass(NetPacket.class);
+    }
 
     public void addNetworkedComponent(INetworked component) {
         if (isServer) {
@@ -109,5 +114,11 @@ public abstract class INetworking {
         }
 
         return e;
+    }
+
+    // game has to do this
+    public void registerClass(Class type) {
+        server.getKryo().register(type);
+        client.getKryo().register(type);
     }
 }
