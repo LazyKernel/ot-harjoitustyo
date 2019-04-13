@@ -40,6 +40,7 @@ compile exec:java -Dexec.mainClass=asteroids.Main "-Dexec.args=<argumentit>"
 ```
 
 | argumentti | tietoa |
+| :----: | :----: |
 | __-o__ | Offline, ei yhdistä serverille, mutta sallii pelaamisen yksin. Suoritetaan oletusarvoisesti, jos muita argumentteja ei annettu. |
 | __-c <ip>__ | Käynnistää clientin ja yhdistää serverille kyseiseen ip-osoitteeseen. Testiserveri _saattaa_ olla käynnissä osoitteessa __okay.works__. |
 | __-s__ | Käynnistää headless-serverin, eli komentorivipohjaisen serverin, joka ei vaadi OpenGL:ää tai näyttöä. |
