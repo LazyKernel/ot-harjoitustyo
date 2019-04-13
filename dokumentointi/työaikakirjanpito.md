@@ -15,4 +15,5 @@
 | | 2 |	arkkitehtuuritiedoston tekeminen |
 | 11.4. | 2 | serverin koodaamista |
 | 12.4. | 3 | clientin networkingin koodaamista |
+| 13.4. | 6 | networkingin koodaaminen jotenkuten toimivaksi |
 | yht | ? |

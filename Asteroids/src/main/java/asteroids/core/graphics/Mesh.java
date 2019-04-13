@@ -25,6 +25,8 @@ public class Mesh extends EntityComponent {
     private Vector3f[] points = new Vector3f[0];
     private int vertCount = 0;
 
+    private boolean pendingUpdate = false;
+
     @Override
     public void init() {
 
@@ -32,6 +34,10 @@ public class Mesh extends EntityComponent {
 
     @Override
     public void render() {
+        if (points.length <= 0 || shader == null) {
+            return;
+        }
+
         try (MemoryStack stack = MemoryStack.stackPush()) {
             glBindVertexArray(pVAO);
             glEnableVertexAttribArray(0);
@@ -52,7 +58,39 @@ public class Mesh extends EntityComponent {
 
     @Override
     public void update(float deltaTime) {
+        if (pendingUpdate) {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
+                FloatBuffer vertexData = BufferUtils.createFloatBuffer(vertCount * VERTEX_SIZE);
 
+                for (int i = 0; i < vertCount; i++) {
+                    vertexData.put(this.points[i].get(stack.mallocFloat(VERTEX_SIZE)));
+                }
+                vertexData.flip();
+
+                pVBO = glGenBuffers();
+                glBindBuffer(GL_ARRAY_BUFFER, pVBO);
+                glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+                pVAO = glGenVertexArrays();
+                glBindVertexArray(pVAO);
+                glEnableVertexAttribArray(0);
+
+                glBindBuffer(GL_ARRAY_BUFFER, pVBO);
+                glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, false, 0, 0);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+                glDisableVertexAttribArray(0);
+                glBindVertexArray(0);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+
+            shader = new MeshShader();
+            shader.init();
+
+            pendingUpdate = false;
+        }
     }
 
     @Override
@@ -88,6 +126,7 @@ public class Mesh extends EntityComponent {
 
     public void setDrawType(int drawType) {
         this.drawType = drawType;
+        pendingUpdate = true;
     }
 
     public Vector3f[] getPoints() {
@@ -97,36 +136,7 @@ public class Mesh extends EntityComponent {
     public void setPoints(Vector3f[] points) {
         this.points = points;
         vertCount = this.points.length;
-
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            FloatBuffer vertexData = BufferUtils.createFloatBuffer(vertCount * VERTEX_SIZE);
-
-            for (int i = 0; i < vertCount; i++) {
-                vertexData.put(this.points[i].get(stack.mallocFloat(VERTEX_SIZE)));
-            }
-            vertexData.flip();
-
-            pVBO = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, pVBO);
-            glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-            pVAO = glGenVertexArrays();
-            glBindVertexArray(pVAO);
-            glEnableVertexAttribArray(0);
-
-            glBindBuffer(GL_ARRAY_BUFFER, pVBO);
-            glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, false, 0, 0);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-            glDisableVertexAttribArray(0);
-            glBindVertexArray(0);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-
-        shader = new MeshShader();
-        shader.init();
+        pendingUpdate = true;
     }
 
     public void setPoints(Vector3f[] points, int drawType) {

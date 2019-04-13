@@ -69,7 +69,7 @@ public class Entity {
                 continue;
             }
 
-            if (c.getClass() == type) {
+            if (type.isAssignableFrom(c.getClass())) {
                 comps.add(type.cast(c));
             }
         }

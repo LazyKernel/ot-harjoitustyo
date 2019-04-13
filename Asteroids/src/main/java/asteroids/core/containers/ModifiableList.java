@@ -1,5 +1,7 @@
 package asteroids.core.containers;
 
+import asteroids.core.graphics.Renderer;
+
 import java.util.Iterator;
 
 public class ModifiableList<T> implements Iterable<T> {
@@ -27,7 +29,7 @@ public class ModifiableList<T> implements Iterable<T> {
         int idx = counter++;
         objects[idx] = e;
 
-        if (e.getClass() == Entity.class) {
+        if (e.getClass() == Entity.class && Renderer.getRenderer().getIsServer()) {
             ((Entity) e).setEntityId(idx);
         }
         numObjects++;
@@ -58,9 +60,6 @@ public class ModifiableList<T> implements Iterable<T> {
 
             int newIdx = newCounter++;
             newObjects[newIdx] = objects[i];
-            if (newObjects[newIdx].getClass() == Entity.class) {
-                ((Entity) newObjects[newIdx]).setEntityId(newIdx);
-            }
             counter++;
         }
 
@@ -86,15 +85,21 @@ public class ModifiableList<T> implements Iterable<T> {
     }
 
     public void remove(int entityId) {
-        if (entityId < 0 || entityId >= counter) {
+        if (entityId < 0) {
             return;
         }
 
-        if (objects[entityId] == null) {
-            return;
+        for (int i = 0; i < counter; i++) {
+            Object o = objects[i];
+            if (o instanceof Entity) {
+                Entity e = (Entity) o;
+                if (e.getEntityId() == entityId) {
+                    objects[i] = null;
+                    break;
+                }
+            }
         }
 
-        objects[entityId] = null;
         numObjects--;
     }
 
@@ -105,6 +110,25 @@ public class ModifiableList<T> implements Iterable<T> {
         }
 
         return (T) objects[idx];
+    }
+
+    @SuppressWarnings("unchecked")
+    public T getWithEntityId(int entityId) {
+        if (entityId < 0) {
+            return null;
+        }
+
+        for (int i = 0; i < counter; i++) {
+            Object o = objects[i];
+            if (o instanceof Entity) {
+                Entity e = (Entity) o;
+                if (e.getEntityId() == entityId) {
+                    return (T) objects[i];
+                }
+            }
+        }
+
+        return null;
     }
 
     public int size() {

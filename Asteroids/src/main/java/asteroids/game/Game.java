@@ -14,10 +14,12 @@ public class Game {
             renderer.getNetworking().registerClass(Bullet.class);
         }
 
-        Entity player = new Entity();
-        Player playerComponent = new Player();
-        player.addComponent(playerComponent);
-        renderer.addEntity(player);
+        if (renderer.getIsOffline()) {
+            Entity player = new Entity();
+            Player playerComponent = new Player();
+            player.addComponent(playerComponent);
+            renderer.addEntity(player);
+        }
     }
 
     public void update() {

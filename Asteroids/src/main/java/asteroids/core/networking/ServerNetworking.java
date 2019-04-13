@@ -1,6 +1,7 @@
 package asteroids.core.networking;
 
 import asteroids.core.containers.Entity;
+import asteroids.game.components.Player;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
@@ -19,6 +20,7 @@ public class ServerNetworking extends INetworking {
 
     @Override
     public void init() {
+        System.out.println("Starting server.");
         server.start();
         try {
             server.bind(portTCP, portUDP);
@@ -74,17 +76,18 @@ public class ServerNetworking extends INetworking {
     }
 
     private void handlePacket(NetPacket packet, Connection connection) {
+        if (packet.isNetRequest) {
+            if (packet.data instanceof String) {
+                handleStringPacket((String) packet.data, connection);
+            }
+            return;
+        }
+
         if (packet.netID < 0 || packet.entityId < 0) {
             return;
         }
 
         // TODO: check if is actually the owner
-
-        if (packet.isNetRequest) {
-            if (packet.data instanceof String) {
-                handleStringPacket((String) packet.data, connection);
-            }
-        }
 
         Entity e = getRenderer().getEntity(packet.entityId);
 
@@ -106,8 +109,18 @@ public class ServerNetworking extends INetworking {
         switch (data) {
             case "connect":
                 sendStateToConnectedClient(connection);
+                INetworked n = createPlayer();
+                ownerMap.put(n.getNetId(), connection);
                 break;
         }
+    }
+
+    private INetworked createPlayer() {
+        Entity player = new Entity();
+        Player playerComponent = new Player();
+        getRenderer().addEntity(player);
+        player.addComponent(playerComponent);
+        return playerComponent;
     }
 
     private void sendStateToConnectedClient(Connection connection) {
@@ -117,9 +130,39 @@ public class ServerNetworking extends INetworking {
     }
 
     private void sendNewEntity(Entity entity, Connection connection) {
+        sendNewEntity(encodeEntity(entity), connection);
+    }
+
+    private void sendNewEntity(String entity, Connection connection) {
         NetPacket packet = new NetPacket();
         packet.isNetRequest = true;
-        packet.data = "e;" + encodeEntity(entity);
+        packet.data = "e;" + entity;
         connection.sendTCP(packet);
+    }
+
+    @Override
+    public void addNetworkedComponent(INetworked component) {
+        component.setNetId(getNewNetId());
+        networkeds.add(component);
+
+        String entity = encodeEntity(component.getEntity());
+        for (Connection conn : server.getConnections()) {
+            sendNewEntity(entity, conn);
+        }
+    }
+
+    @Override
+    public void removeNetworkedComponent(INetworked component) {
+        if (component == null) {
+            return;
+        }
+
+        NetPacket packet = new NetPacket();
+        packet.isNetRequest = true;
+        packet.data = "r;" + component.getEntity().getEntityId();
+
+        for (Connection conn : server.getConnections()) {
+            conn.sendTCP(packet);
+        }
     }
 }

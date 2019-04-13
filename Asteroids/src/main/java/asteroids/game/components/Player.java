@@ -22,7 +22,7 @@ public class Player extends INetworked {
 
     @Override
     public void init() {
-        if (!getEntity().getRenderer().getIsHeadlessServer()) {
+        if (!getEntity().getRenderer().getIsHeadlessServer() || getEntity().getRenderer().getIsServerVisualDebug()) {
             playerMesh = new Mesh();
             playerMesh.setPoints(POINTS, GL_LINE_STRIP);
             getEntity().addComponent(playerMesh);
@@ -87,7 +87,7 @@ public class Player extends INetworked {
             }
 
             if (isServer && o instanceof Integer) {
-                handleInput(inputFlags, deltaTime);
+                handleInput((int) o, deltaTime);
             }
         }
     }

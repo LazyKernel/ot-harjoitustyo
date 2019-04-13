@@ -1,13 +1,22 @@
 package asteroids.core.networking;
 
 import asteroids.core.containers.Entity;
+import asteroids.core.containers.Transform;
+import asteroids.core.graphics.Mesh;
 import asteroids.core.graphics.Renderer;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
+import static com.esotericsoftware.minlog.Log.LEVEL_TRACE;
 
 public abstract class INetworking {
     final int portTCP = 55555;
@@ -30,12 +39,16 @@ public abstract class INetworking {
 
     public INetworking() {
         registerClass(NetPacket.class);
+        registerClass(Transform.class);
+        registerClass(Vector2f.class);
+        registerClass(Vector3f.class);
+        registerClass(Mesh.class);
+        Log.set(LEVEL_DEBUG);
     }
 
     public void addNetworkedComponent(INetworked component) {
         if (isServer) {
             component.setNetId(getNewNetId());
-            // TODO: send net id over net
         }
 
         networkeds.add(component);
@@ -88,7 +101,7 @@ public abstract class INetworking {
 
         List<INetworked> list = e.getComponentsOfType(INetworked.class);
         for (INetworked n : list) {
-            builder.append(";").append(n.getClass().getSuperclass().getTypeName()).append(";").append(n.getNetId());
+            builder.append(";").append(n.getClass().getName()).append(";").append(n.getNetId());
         }
 
         return builder.toString();

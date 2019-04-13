@@ -18,7 +18,7 @@ public class Bullet extends INetworked {
 
     @Override
     public void init() {
-        if (!getEntity().getRenderer().getIsHeadlessServer()) {
+        if (!getEntity().getRenderer().getIsHeadlessServer() || getEntity().getRenderer().getIsServerVisualDebug()) {
             bulletMesh = new Mesh();
             bulletMesh.setPoints(POINTS, GL_LINES);
             getEntity().addComponent(bulletMesh);

@@ -1,8 +1,6 @@
 package asteroids.core.networking;
 
 import asteroids.core.containers.Entity;
-import asteroids.core.containers.EntityComponent;
-import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
@@ -11,6 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientNetworking extends INetworking {
+
+    private float deltaCounter = 0.0f;
+    private String ip;
+
+    public ClientNetworking(String ip) {
+        this.ip = ip;
+    }
 
     @Override
     public boolean isOffline() {
@@ -25,13 +30,19 @@ public class ClientNetworking extends INetworking {
     @Override
     public void preUpdate(float deltaTime) {
         lastDelta = deltaTime;
+        deltaCounter += deltaTime;
     }
 
     @Override
     public void postUpdate(float deltaTime) {
+        if (deltaCounter < 0.016f) {
+            return;
+        }
+
+        deltaCounter = 0.0f;
         for (INetworked n : networkeds) {
             List<Object> list = new ArrayList<>();
-            n.netSerialize(list, true);
+            n.netSerialize(list, false);
 
             for (Object o : list) {
                 NetPacket packet = new NetPacket();
@@ -48,7 +59,7 @@ public class ClientNetworking extends INetworking {
         return -1;
     }
 
-    public void connect(String ip) {
+    public void connect() {
         client.start();
         try {
             client.connect(5000, ip, portTCP, portUDP);
@@ -72,12 +83,12 @@ public class ClientNetworking extends INetworking {
     }
 
     private void handlePacket(NetPacket packet) {
-        if (packet.netID < 0 || packet.entityId < 0) {
+        if (packet.isNetRequest) {
+            handleStringPacket((String) packet.data);
             return;
         }
 
-        if (packet.isNetRequest) {
-            handleStringPacket((String) packet.data);
+        if (packet.netID < 0 || packet.entityId < 0) {
             return;
         }
 
@@ -101,6 +112,8 @@ public class ClientNetworking extends INetworking {
 
         if (split[0].equals("e")) {
             getRenderer().addEntity(decodeEntity(split[1]));
+        } else if (split[0].equals("r")) {
+            getRenderer().removeEntity(Integer.parseInt(split[1]));
         }
     }
 }

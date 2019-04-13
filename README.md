@@ -32,3 +32,17 @@ Testikattavuusraportin voi luoda komennolla
 mvn jacoco:report
 ```
 Raportti löytyy tiedostosta _target/site/jacoco/index.html_
+
+### Asetukset
+Ohjelmaan voi syöttää tällä hetkellä komentorivillä asetuksia, asetukset tulevat normisuorituskomennon perään -Dexec.args osaan.
+```
+compile exec:java -Dexec.mainClass=asteroids.Main "-Dexec.args=<argumentit>" 
+```
+
+| argumentti | tietoa |
+| __-o__ | Offline, ei yhdistä serverille, mutta sallii pelaamisen yksin. Suoritetaan oletusarvoisesti, jos muita argumentteja ei annettu. |
+| __-c <ip>__ | Käynnistää clientin ja yhdistää serverille kyseiseen ip-osoitteeseen. Testiserveri _saattaa_ olla käynnissä osoitteessa __okay.works__. |
+| __-s__ | Käynnistää headless-serverin, eli komentorivipohjaisen serverin, joka ei vaadi OpenGL:ää tai näyttöä. |
+| __-s__ ja __-v__ | Käynnistää serverin ja ikkunan, josta näkee serverin tilan. __-v__ ei tee yksinään mitään. Hyödyllinen desync ongelmien debuggaamiseen. |
+
+Jos useita networking-tyyppejä yritetään käynnistää samaan aikaan, viimeisenä kirjoitettu otetaan käyttöön.

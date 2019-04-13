@@ -23,6 +23,7 @@ public class Renderer {
     private Game game;
     private GLFWKeyCallback keyCallback;
     private INetworking networking;
+    private boolean isServerVisualDebug = false;
 
     private static Renderer renderer = null;
 
@@ -35,8 +36,9 @@ public class Renderer {
 
     public void init() {
         renderer = this;
+        networking.init();
 
-        if (getIsHeadlessServer()) {
+        if (getIsHeadlessServer() && !getIsServerVisualDebug()) {
             return;
         }
 
@@ -79,7 +81,7 @@ public class Renderer {
     }
 
     public void renderLoop() {
-        if (getIsHeadlessServer()) {
+        if (getIsHeadlessServer() && !getIsServerVisualDebug()) {
             renderLoopServer();
             return;
         }
@@ -152,7 +154,7 @@ public class Renderer {
             e.destroy();
         }
 
-        if (getIsServer() && !getIsOffline()) {
+        if (getIsHeadlessServer() && !getIsServerVisualDebug()) {
             return;
         }
 
@@ -167,15 +169,19 @@ public class Renderer {
     }
 
     public Entity getEntity(int entityId) {
-        return entities.get(entityId);
+        return entities.getWithEntityId(entityId);
     }
 
     public void removeEntity(Entity entity) {
-        removeEntity(entity.getEntityId());
+        if (entity == null) {
+        return;
     }
 
-    private void removeEntity(int entityId) {
-        Entity e = entities.get(entityId);
+    removeEntity(entity.getEntityId());
+}
+
+    public void removeEntity(int entityId) {
+        Entity e = entities.getWithEntityId(entityId);
 
         if (e != null) {
             e.destroy();
@@ -194,6 +200,14 @@ public class Renderer {
 
     public boolean getIsHeadlessServer() {
         return getIsServer() && !getIsOffline();
+    }
+
+    public boolean getIsServerVisualDebug() {
+        return isServerVisualDebug;
+    }
+
+    public void setIsServerVisualDebug(boolean value) {
+        this.isServerVisualDebug = value;
     }
 
     public INetworking getNetworking() {
