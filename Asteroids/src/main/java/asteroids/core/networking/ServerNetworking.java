@@ -7,12 +7,9 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ServerNetworking extends INetworking {
-
-    private HashMap<Integer, Connection> ownerMap = new HashMap<>(); // netId -> owner connection
 
     public ServerNetworking() {
         isServer = true;
@@ -35,6 +32,20 @@ public class ServerNetworking extends INetworking {
                     handlePacket(packet, connection);
                 }
             }
+
+            public void disconnected(Connection connection) {
+                NetConnection c = (NetConnection) connection;
+
+                if (c.name.isEmpty()) {
+                    System.out.println("Spectator disconnected.");
+                } else {
+                    System.out.println("Player " + c.name + " disconnected.");
+                }
+
+                for (int i : c.ownedIds) {
+                    queueForRemoval(networkeds.getWithNetId(i));
+                }
+            }
         });
     }
 
@@ -46,23 +57,28 @@ public class ServerNetworking extends INetworking {
     @Override
     public void postUpdate(float deltaTime) {
         for (INetworked n : networkeds) {
+            if (n == null) {
+                continue;
+            }
+
             List<Object> list = new ArrayList<>();
             n.netSerialize(list, true);
 
             for (Object o : list) {
-                Connection receiver = ownerMap.get(n.getNetId());
-
-                if (receiver == null) {
-                    continue;
-                }
-
                 NetPacket packet = new NetPacket();
                 packet.netID = n.getNetId();
                 packet.entityId = n.getEntity().getEntityId();
                 packet.data = o;
-                receiver.sendUDP(packet);
+                server.sendToAllUDP(packet);
             }
         }
+
+        removeQueuedComponents();
+    }
+
+    @Override
+    public void destroy() {
+        server.stop();
     }
 
     @Override
@@ -87,14 +103,18 @@ public class ServerNetworking extends INetworking {
             return;
         }
 
-        // TODO: check if is actually the owner
+        NetConnection c = (NetConnection) connection;
+
+        if (!c.ownedIds.contains(packet.netID)) {
+            return;
+        }
 
         Entity e = getRenderer().getEntity(packet.entityId);
 
         if (e != null) {
-            List<INetworked> networkeds = e.getComponentsOfType(INetworked.class);
+            List<INetworked> networks = e.getComponentsOfType(INetworked.class);
 
-            for (INetworked n : networkeds) {
+            for (INetworked n : networks) {
                 if (n.getNetId() == packet.netID) {
                     List<Object> list = new ArrayList<>();
                     list.add(packet.data);
@@ -106,18 +126,28 @@ public class ServerNetworking extends INetworking {
     }
 
     private void handleStringPacket(String data, Connection connection) {
-        switch (data) {
+        String[] split = data.split(";");
+        switch (split[0]) {
             case "connect":
-                sendStateToConnectedClient(connection);
-                INetworked n = createPlayer();
-                ownerMap.put(n.getNetId(), connection);
+                if (split.length < 2 || split[1].isEmpty()) {
+                    System.out.println("Spectator connected.");
+                    sendStateToConnectedClient(connection);
+                } else {
+                    System.out.println("Player " + split[1] + " connected.");
+                    sendStateToConnectedClient(connection);
+                    INetworked n = createPlayer(split[1]);
+                    NetConnection c = (NetConnection) connection;
+                    c.ownedIds.add(n.getNetId());
+                    c.name = split[1];
+                }
                 break;
         }
     }
 
-    private INetworked createPlayer() {
+    private INetworked createPlayer(String owner) {
         Entity player = new Entity();
         Player playerComponent = new Player();
+        playerComponent.setOwner(owner);
         getRenderer().addEntity(player);
         player.addComponent(playerComponent);
         return playerComponent;
@@ -125,6 +155,10 @@ public class ServerNetworking extends INetworking {
 
     private void sendStateToConnectedClient(Connection connection) {
         for (INetworked n : networkeds) {
+            if (n == null) {
+                continue;
+            }
+
             sendNewEntity(n.getEntity(), connection);
         }
     }
@@ -160,9 +194,8 @@ public class ServerNetworking extends INetworking {
         NetPacket packet = new NetPacket();
         packet.isNetRequest = true;
         packet.data = "r;" + component.getEntity().getEntityId();
+        server.sendToAllTCP(packet);
 
-        for (Connection conn : server.getConnections()) {
-            conn.sendTCP(packet);
-        }
+        networkeds.remove(component);
     }
 }

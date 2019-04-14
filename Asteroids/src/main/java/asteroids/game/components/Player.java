@@ -38,6 +38,10 @@ public class Player extends INetworked {
 
     @Override
     public void update(float deltaTime) {
+        if (!getOwner().equals(getEntity().getRenderer().getNetworking().getUsername())) {
+            return;
+        }
+
         if (KeyboardHandler.isKeyDown(GLFW_KEY_A)) {
             handleInput(0x1, deltaTime);
             inputFlags |= 0x1;
@@ -119,6 +123,10 @@ public class Player extends INetworked {
     }
 
     private void shoot() {
+        if (!getEntity().getRenderer().getIsHeadlessServer()) {
+            return;
+        }
+
         Vector2f pos = getTransform().getPosition();
         Vector2f scale = getTransform().getScale();
         float rotation = getTransform().getRotation();
@@ -128,10 +136,12 @@ public class Player extends INetworked {
         spawnPos.add(pos.x, pos.y, 0.0f);
 
         Entity bulletEntity = new Entity();
-        bulletEntity.addComponent(new Bullet());
+        Bullet bullet = new Bullet();
+        bullet.setOwner(getOwner());
+        getEntity().getRenderer().addEntity(bulletEntity);
+        bulletEntity.addComponent(bullet);
 
         bulletEntity.getTransform().setPosition(spawnPos);
         bulletEntity.getTransform().setRotation(getTransform().getRotation());
-        getEntity().getRenderer().addEntity(bulletEntity);
     }
 }

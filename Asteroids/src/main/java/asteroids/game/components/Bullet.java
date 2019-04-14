@@ -14,8 +14,6 @@ public class Bullet extends INetworked {
     private static final Vector3f[] POINTS = new Vector3f[]{ new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(0.0f, -1.0f, 0.0f) };
     private Mesh bulletMesh;
 
-    private boolean shouldBeRemoved = false;
-
     @Override
     public void init() {
         if (!getEntity().getRenderer().getIsHeadlessServer() || getEntity().getRenderer().getIsServerVisualDebug()) {
@@ -41,11 +39,8 @@ public class Bullet extends INetworked {
         if (getEntity().getRenderer().getIsServer()) {
             Vector2f pos = getTransform().getPosition();
             if (pos.x > 820.0f || pos.x < -820.0f || pos.y > 620.0f || pos.y < -620.0f) {
-                shouldBeRemoved = true;
                 getEntity().getRenderer().getNetworking().queueForRemoval(this);
             }
-        } else if (shouldBeRemoved) {
-            getEntity().getRenderer().removeEntity(getEntity());
         }
     }
 
@@ -57,10 +52,6 @@ public class Bullet extends INetworked {
     @Override
     public void netSerialize(List<Object> objects, boolean isServer) {
         if (isServer) {
-            if (shouldBeRemoved) {
-                objects.add(true);
-            }
-
             objects.add(getTransform());
         }
     }
@@ -69,11 +60,9 @@ public class Bullet extends INetworked {
     public void netDeserialize(List<Object> objects, float deltaTime, boolean isServer) {
         if (!isServer) {
             for (Object o : objects) {
-                if (o instanceof Boolean) {
-                    shouldBeRemoved = (boolean) o;
-                } else if (o instanceof Transform) {
+                 if (o instanceof Transform) {
                     setTransform((Transform) o);
-                }
+                 }
             }
         }
     }

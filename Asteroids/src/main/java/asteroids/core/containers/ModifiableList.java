@@ -1,6 +1,7 @@
 package asteroids.core.containers;
 
 import asteroids.core.graphics.Renderer;
+import asteroids.core.networking.INetworked;
 
 import java.util.Iterator;
 
@@ -8,6 +9,8 @@ public class ModifiableList<T> implements Iterable<T> {
     private Object[] objects;
     private int counter = 0;
     private int numObjects = 0;
+
+    private int entityIdCounter = 0;
 
     public ModifiableList() {
         objects = new Object[100];
@@ -30,7 +33,7 @@ public class ModifiableList<T> implements Iterable<T> {
         objects[idx] = e;
 
         if (e.getClass() == Entity.class && Renderer.getRenderer().getIsServer()) {
-            ((Entity) e).setEntityId(idx);
+            ((Entity) e).setEntityId(entityIdCounter++);
         }
         numObjects++;
     }
@@ -95,12 +98,11 @@ public class ModifiableList<T> implements Iterable<T> {
                 Entity e = (Entity) o;
                 if (e.getEntityId() == entityId) {
                     objects[i] = null;
+                    numObjects--;
                     break;
                 }
             }
         }
-
-        numObjects--;
     }
 
     @SuppressWarnings("unchecked")
@@ -123,6 +125,25 @@ public class ModifiableList<T> implements Iterable<T> {
             if (o instanceof Entity) {
                 Entity e = (Entity) o;
                 if (e.getEntityId() == entityId) {
+                    return (T) objects[i];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T getWithNetId(int netId) {
+        if (netId < 0) {
+            return null;
+        }
+
+        for (int i = 0; i < counter; i++) {
+            Object o = objects[i];
+            if (o instanceof INetworked) {
+                INetworked e = (INetworked) o;
+                if (e.getNetId() == netId) {
                     return (T) objects[i];
                 }
             }

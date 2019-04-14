@@ -13,8 +13,9 @@ public class ClientNetworking extends INetworking {
     private float deltaCounter = 0.0f;
     private String ip;
 
-    public ClientNetworking(String ip) {
+    public ClientNetworking(String ip, String username) {
         this.ip = ip;
+        this.setUsername(username);
     }
 
     @Override
@@ -41,6 +42,10 @@ public class ClientNetworking extends INetworking {
 
         deltaCounter = 0.0f;
         for (INetworked n : networkeds) {
+            if (n == null) {
+                continue;
+            }
+
             List<Object> list = new ArrayList<>();
             n.netSerialize(list, false);
 
@@ -52,6 +57,13 @@ public class ClientNetworking extends INetworking {
                 client.sendUDP(packet);
             }
         }
+
+        removeQueuedComponents();
+    }
+
+    @Override
+    public void destroy() {
+        client.stop();
     }
 
     @Override
@@ -69,7 +81,7 @@ public class ClientNetworking extends INetworking {
 
         NetPacket packet = new NetPacket();
         packet.isNetRequest = true;
-        packet.data = "connect";
+        packet.data = "connect;" + getUsername();
         client.sendTCP(packet);
 
         client.addListener(new Listener() {
@@ -78,6 +90,11 @@ public class ClientNetworking extends INetworking {
                     NetPacket packet = (NetPacket) object;
                     handlePacket(packet);
                 }
+            }
+
+            public void disconnected(Connection connection) {
+                // TODO: disconnected
+                System.out.println("Disconnected from server.");
             }
         });
     }
@@ -94,9 +111,9 @@ public class ClientNetworking extends INetworking {
 
         Entity e = getRenderer().getEntity(packet.entityId);
         if (e != null) {
-            List<INetworked> networkeds = e.getComponentsOfType(INetworked.class);
+            List<INetworked> networks = e.getComponentsOfType(INetworked.class);
 
-            for (INetworked n : networkeds) {
+            for (INetworked n : networks) {
                 if (n.getNetId() == packet.netID) {
                     List<Object> list = new ArrayList<>();
                     list.add(packet.data);
@@ -113,7 +130,15 @@ public class ClientNetworking extends INetworking {
         if (split[0].equals("e")) {
             getRenderer().addEntity(decodeEntity(split[1]));
         } else if (split[0].equals("r")) {
-            getRenderer().removeEntity(Integer.parseInt(split[1]));
+            Entity e = getRenderer().getEntity(Integer.parseInt(split[1]));
+
+            if (e != null) {
+                List<INetworked> list = e.getComponentsOfType(INetworked.class);
+
+                if (!list.isEmpty()) {
+                    queuedForRemoval.add(list.get(0));
+                }
+            }
         }
     }
 }

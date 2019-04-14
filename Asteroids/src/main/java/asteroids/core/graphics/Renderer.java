@@ -3,6 +3,7 @@ package asteroids.core.graphics;
 import asteroids.core.containers.Entity;
 import asteroids.core.containers.ModifiableList;
 import asteroids.core.networking.INetworking;
+import asteroids.core.threading.ConsoleThread;
 import asteroids.game.Game;
 import asteroids.core.input.KeyboardHandler;
 import org.lwjgl.glfw.*;
@@ -24,6 +25,7 @@ public class Renderer {
     private GLFWKeyCallback keyCallback;
     private INetworking networking;
     private boolean isServerVisualDebug = false;
+    private boolean running = true;
 
     private static Renderer renderer = null;
 
@@ -39,6 +41,7 @@ public class Renderer {
         networking.init();
 
         if (getIsHeadlessServer() && !getIsServerVisualDebug()) {
+            new ConsoleThread(this);
             return;
         }
 
@@ -121,7 +124,7 @@ public class Renderer {
     public void renderLoopServer() {
         long lastTime = System.nanoTime();
         final float divisor = 1000000000.0f;
-        while (true) {
+        while (running) {
             float delta = (System.nanoTime() - lastTime) / divisor;
             networking.preUpdate(delta);
             game.update();
@@ -144,6 +147,7 @@ public class Renderer {
     }
 
     public void cleanUp() {
+        networking.destroy();
         game.destroy();
 
         for (Entity e : entities) {
@@ -174,11 +178,11 @@ public class Renderer {
 
     public void removeEntity(Entity entity) {
         if (entity == null) {
-        return;
-    }
+            return;
+        }
 
-    removeEntity(entity.getEntityId());
-}
+        removeEntity(entity.getEntityId());
+    }
 
     public void removeEntity(int entityId) {
         Entity e = entities.getWithEntityId(entityId);
@@ -216,5 +220,9 @@ public class Renderer {
 
     public static Renderer getRenderer() {
         return renderer;
+    }
+
+    public void quit() {
+        this.running = false;
     }
 }

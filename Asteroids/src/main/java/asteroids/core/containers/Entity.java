@@ -77,6 +77,7 @@ public class Entity {
     }
 
     public void removeComponent(EntityComponent component) {
+        removeNetworkedComponentIfPossible(component);
         component.destroy();
         entityComponents.remove(component);
     }

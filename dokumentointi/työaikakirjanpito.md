@@ -16,4 +16,8 @@
 | 11.4. | 2 | serverin koodaamista |
 | 12.4. | 3 | clientin networkingin koodaamista |
 | 13.4. | 6 | networkingin koodaaminen jotenkuten toimivaksi |
+| 14.4. | 2 | clean up ja muuta |
+| | 2 | disconnectaamisen käsittely |
+| | 1 | nimien lisääminen ja vain omistajan entityiden muokkaamisen salliminen |
+| | 0.5 | networkingin viimeistelyä |
 | yht | ? |

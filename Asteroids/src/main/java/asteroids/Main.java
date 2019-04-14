@@ -19,7 +19,11 @@ public class Main {
             } else if (args[i].equals("-s")) {
                 networking = new ServerNetworking();
             } else if (args[i].equals("-c") && i + 1 < args.length) {
-                networking = new ClientNetworking(args[i+1]);
+                if (i+2 < args.length) {
+                    networking = new ClientNetworking(args[i+1], args[i+2]);
+                } else {
+                    networking = new ClientNetworking(args[i+1], "");
+                }
             } else if (args[i].equals("-v")) {
                 visualDebug = true;
             }

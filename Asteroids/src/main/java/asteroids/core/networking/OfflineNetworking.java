@@ -61,6 +61,11 @@ public class OfflineNetworking extends INetworking {
     }
 
     @Override
+    public void destroy() {
+
+    }
+
+    @Override
     public int getNewNetId() {
         return networkedComponentCounter++;
     }
