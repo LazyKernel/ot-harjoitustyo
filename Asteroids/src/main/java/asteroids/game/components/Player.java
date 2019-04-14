@@ -43,27 +43,27 @@ public class Player extends INetworked {
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_A)) {
-            handleInput(0x1, deltaTime);
+            handleInput(0x1, deltaTime, false);
             inputFlags |= 0x1;
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_D)) {
-            handleInput(0x2, deltaTime);
+            handleInput(0x2, deltaTime, false);
             inputFlags |= 0x2;
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_W)) {
-            handleInput(0x4, deltaTime);
+            handleInput(0x4, deltaTime, false);
             inputFlags |= 0x4;
         }
 
         if (KeyboardHandler.isKeyDown(GLFW_KEY_S)) {
-            handleInput(0x8, deltaTime);
+            handleInput(0x8, deltaTime, false);
             inputFlags |= 0x8;
         }
 
         if (KeyboardHandler.isKeyPressed(GLFW_KEY_SPACE)) {
-            shoot();
+            shoot(false);
             inputFlags |= 0x10;
         }
     }
@@ -91,12 +91,12 @@ public class Player extends INetworked {
             }
 
             if (isServer && o instanceof Integer) {
-                handleInput((int) o, deltaTime);
+                handleInput((int) o, deltaTime, true);
             }
         }
     }
 
-    private void handleInput(int inputFlags, float deltaTime) {
+    private void handleInput(int inputFlags, float deltaTime, boolean isServer) {
         if ((inputFlags & 0x1) != 0) {
             getTransform().rotate((float) Math.PI * deltaTime * 2);
         }
@@ -118,12 +118,12 @@ public class Player extends INetworked {
         }
 
         if ((inputFlags & 0x10) != 0) {
-            shoot();
+            shoot(isServer);
         }
     }
 
-    private void shoot() {
-        if (!getEntity().getRenderer().getIsHeadlessServer()) {
+    private void shoot(boolean isServer) {
+        if (!isServer) {
             return;
         }
 

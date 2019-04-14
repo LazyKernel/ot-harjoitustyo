@@ -1,5 +1,8 @@
 import asteroids.core.containers.Entity;
 import asteroids.core.containers.ModifiableList;
+import asteroids.core.graphics.Renderer;
+import asteroids.core.networking.ServerNetworking;
+import asteroids.game.Game;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,11 +13,15 @@ import static org.junit.Assert.assertEquals;
 public class ModifiableListTest
 {
     ModifiableList<Entity> list;
+    Renderer renderer;
 
     @Before
     public void setUp()
     {
         list = new ModifiableList<>();
+        // TODO: make GAME a interface
+        renderer = new Renderer(new Game(), new ServerNetworking());
+        renderer.init();
     }
 
     @Test

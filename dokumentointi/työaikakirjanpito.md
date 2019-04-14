@@ -20,4 +20,5 @@
 | | 2 | disconnectaamisen käsittely |
 | | 1 | nimien lisääminen ja vain omistajan entityiden muokkaamisen salliminen |
 | | 0.5 | networkingin viimeistelyä |
+| | 0.5 | OfflineNetworking luokan fixaus |
 | yht | ? |

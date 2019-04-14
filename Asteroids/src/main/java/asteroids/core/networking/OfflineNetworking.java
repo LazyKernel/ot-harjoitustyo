@@ -19,6 +19,10 @@ public class OfflineNetworking extends INetworking {
         waitingForSerialization.clear();
 
         for (INetworked n : networkeds) {
+            if (n == null) {
+                continue;
+            }
+
             List<Object> list = new ArrayList<>();
             n.netSerialize(list, false);
 
@@ -28,6 +32,10 @@ public class OfflineNetworking extends INetworking {
         }
 
         for (INetworked n : networkeds) {
+            if (n == null) {
+                continue;
+            }
+
             List<Object> list = waitingForSerialization.get(n.getNetId());
 
             if (list != null) {
@@ -41,6 +49,10 @@ public class OfflineNetworking extends INetworking {
         waitingForSerialization.clear();
 
         for (INetworked n : networkeds) {
+            if (n == null) {
+                continue;
+            }
+
             List<Object> list = new ArrayList<>();
             n.netSerialize(list, true);
 
@@ -50,6 +62,10 @@ public class OfflineNetworking extends INetworking {
         }
 
         for (INetworked n : networkeds) {
+            if (n == null) {
+                continue;
+            }
+
             List<Object> list = waitingForSerialization.get(n.getNetId());
 
             if (list != null) {

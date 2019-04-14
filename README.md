@@ -42,7 +42,7 @@ mvn compile exec:java -Dexec.mainClass=asteroids.Main "-Dexec.args=<argumentit>"
 | argumentti | tietoa |
 | :----: | :----: |
 | `-o` | Offline, ei yhdistä serverille, mutta sallii pelaamisen yksin. Suoritetaan oletusarvoisesti, jos muita argumentteja ei annettu. |
-| `-c <ip> <username>` | Käynnistää clientin ja yhdistää serverille kyseiseen ip-osoitteeseen. Testiserveri _saattaa_ olla käynnissä osoitteessa __okay.works__. Jos käyttäjänimeä ei ole annettu, ei luoda pelaajaa, vaan siirrytään _spectator_ tilaan. |
+| `-c <ip> <username>` | Käynnistää clientin ja yhdistää serverille kyseiseen ip-osoitteeseen. Testiserveri _saattaa_ olla käynnissä osoitteessa __okay.works__. Jos käyttäjänimeä ei ole annettu, ei luoda pelaajaa, vaan siirrytään _spectator_ tilaan. Jos käytät samaa nimeä kuin joku muu samaan aikaan, et pysty ampumaan. Myöhemmin serveri kyllä tarkistaa. |
 | `-s` | Käynnistää headless-serverin, eli komentorivipohjaisen serverin, joka ei vaadi OpenGL:ää tai näyttöä. |
 | `-s -v` | Käynnistää serverin ja ikkunan, josta näkee serverin tilan. __-v__ ei tee yksinään mitään. Hyödyllinen desync ongelmien debuggaamiseen. |
 
