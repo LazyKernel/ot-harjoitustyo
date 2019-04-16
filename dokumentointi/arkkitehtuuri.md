@@ -17,3 +17,7 @@ _Game_ sisältää itse pelin logiikan ja sille erityiset komponentit.
 
 ![pakkausrakenne1](https://i.imgur.com/52wDCqB.png)
 ![pakkausrakenne2](https://i.imgur.com/NY2bd2s.png)
+
+## Sovelluslogiikka
+Kun käyttäjä yhdistää serverille, clientin ja serverin kommunikointi näyttää suunnilleen seuraavalta, olettaen, että virheitä ei tapahdu:
+![sekvenssi1](https://i.imgur.com/46W0bMz.png)

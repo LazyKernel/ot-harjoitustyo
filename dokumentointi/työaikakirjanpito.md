@@ -23,4 +23,5 @@
 | | 0.5 | OfflineNetworking luokan fixaus |
 | | 1 | testaamista |
 | 16.4. | 2 | testien kirjoittamista |
-| yht | ? |
+| | 1 | sekvenssikaavio ja muuta viimeistelyä palautukseen |
+| yht | 46 |

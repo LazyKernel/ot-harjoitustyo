@@ -8,6 +8,8 @@
   
 ## Linkkejä
 
+[UUSIN RELEASE](https://github.com/LazyKernel/ot-harjoitustyo/releases/tag/v1.0.1)
+
 [Määrittelydokumentti](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/dokumentointi/m%C3%A4%C3%A4rittelydokumentti.md)
 
 [Työaikakirjanpito](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/dokumentointi/ty%C3%B6aikakirjanpito.md)
@@ -31,7 +33,18 @@ Testikattavuusraportin voi luoda komennolla
 ```
 mvn jacoco:report
 ```
-Raportti löytyy tiedostosta _target/site/jacoco/index.html_
+Testikattavuusraportti löytyy tiedostosta _target/site/jacoco/index.html_
+
+Checkstyle-tarkastuksen voi suorittaa komennolla 
+```
+mvn jxr:jxr checkstyle:checkstyle
+```
+Checkstyle-raportti löytyy tiedostosta _target/site/checkstyle.html_
+
+Suoritettavan jarin voi generoida komennolla
+```
+mvn package
+```
 
 ### Asetukset
 Ohjelmaan voi syöttää tällä hetkellä komentorivillä asetuksia, asetukset tulevat normisuorituskomennon perään -Dexec.args osaan.
