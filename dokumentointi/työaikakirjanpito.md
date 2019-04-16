@@ -22,4 +22,5 @@
 | | 0.5 | networkingin viimeistelyä |
 | | 0.5 | OfflineNetworking luokan fixaus |
 | | 1 | testaamista |
+| 16.4. | 2 | testien kirjoittamista |
 | yht | ? |

@@ -10,8 +10,6 @@ public class ModifiableList<T> implements Iterable<T> {
     private int counter = 0;
     private int numObjects = 0;
 
-    private int entityIdCounter = 0;
-
     public ModifiableList() {
         objects = new Object[100];
     }
@@ -25,16 +23,8 @@ public class ModifiableList<T> implements Iterable<T> {
             resizeArray(objects.length * 2);
         }
 
-        /*if (numObjects <= objects.length / 4) {
-            resizeArray(objects.length / 4);
-        }*/
-
         int idx = counter++;
         objects[idx] = e;
-
-        if (e.getClass() == Entity.class && Renderer.getRenderer().getIsServer()) {
-            ((Entity) e).setEntityId(entityIdCounter++);
-        }
         numObjects++;
     }
 
@@ -71,9 +61,16 @@ public class ModifiableList<T> implements Iterable<T> {
     }
 
     public void remove(T t) {
-        if (t.getClass() == Entity.class) {
-            remove(((Entity) t).getEntityId());
+        if (numObjects <= 0) {
             return;
+        }
+
+        if (t instanceof Entity) {
+            Entity e = (Entity) t;
+            if (e.getEntityId() >= 0) {
+                remove(e.getEntityId());
+                return;
+            }
         }
 
         for (int i = 0; i < counter; i++) {
@@ -83,11 +80,17 @@ public class ModifiableList<T> implements Iterable<T> {
 
             if (objects[i].equals(t)) {
                 objects[i] = null;
+                numObjects--;
+                break;
             }
         }
     }
 
     public void remove(int entityId) {
+        if (numObjects <= 0) {
+            return;
+        }
+
         if (entityId < 0) {
             return;
         }
@@ -156,10 +159,15 @@ public class ModifiableList<T> implements Iterable<T> {
         return numObjects;
     }
 
+    public int capacity() {
+        return objects.length;
+    }
+
     public void clear() {
         for (int i = 0; i < counter; i++) {
             objects[i] = null;
         }
+        numObjects = 0;
     }
 
     @Override

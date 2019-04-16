@@ -70,6 +70,7 @@
 					<excludes>
 						<exclude>asteroids/core/graphics/*</exclude>
 						<exclude>asteroids/core/graphics/shaders/*</exclude>
+						<exclude>asteroids/core/networking/*</exclude>
 					</excludes>
 				</configuration>
                 <executions>

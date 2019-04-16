@@ -60,9 +60,9 @@ public class Bullet extends INetworked {
     public void netDeserialize(List<Object> objects, float deltaTime, boolean isServer) {
         if (!isServer) {
             for (Object o : objects) {
-                 if (o instanceof Transform) {
+                if (o instanceof Transform) {
                     setTransform((Transform) o);
-                 }
+                }
             }
         }
     }

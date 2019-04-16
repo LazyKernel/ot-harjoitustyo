@@ -26,6 +26,7 @@ public class Renderer {
     private INetworking networking;
     private boolean isServerVisualDebug = false;
     private boolean running = true;
+    private int entityIdCounter = 0;
 
     private static Renderer renderer = null;
 
@@ -34,10 +35,10 @@ public class Renderer {
         this.game.setRenderer(this);
         this.networking = networking;
         networking.setRenderer(this);
+        renderer = this;
     }
 
     public void init() {
-        renderer = this;
         networking.init();
 
         if (getIsHeadlessServer() && !getIsServerVisualDebug()) {
@@ -169,6 +170,10 @@ public class Renderer {
     }
 
     public void addEntity(Entity entity) {
+        if (getIsServer()) {
+            entity.setEntityId(entityIdCounter++);
+        }
+
         entities.add(entity);
     }
 

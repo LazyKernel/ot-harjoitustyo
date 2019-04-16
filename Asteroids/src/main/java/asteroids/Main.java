@@ -8,21 +8,21 @@ import asteroids.game.Game;
 import asteroids.core.graphics.Renderer;
 
 public class Main {
-    public static void main(String[] args) {
-        Game game = new Game();
-        INetworking networking = null;
-        boolean visualDebug = false;
+    private Game game = new Game();
+    private INetworking networking = null;
+    private boolean visualDebug = false;
 
+    public void setArgs(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-o")) {
                 networking = new OfflineNetworking();
             } else if (args[i].equals("-s")) {
                 networking = new ServerNetworking();
             } else if (args[i].equals("-c") && i + 1 < args.length) {
-                if (i+2 < args.length) {
-                    networking = new ClientNetworking(args[i+1], args[i+2]);
+                if (i + 2 < args.length) {
+                    networking = new ClientNetworking(args[i + 1], args[i + 2]);
                 } else {
-                    networking = new ClientNetworking(args[i+1], "");
+                    networking = new ClientNetworking(args[i + 1], "");
                 }
             } else if (args[i].equals("-v")) {
                 visualDebug = true;
@@ -32,18 +32,32 @@ public class Main {
         if (networking == null) {
             networking = new OfflineNetworking();
         }
+    }
 
-        Renderer renderer = new Renderer(game, networking);
-        renderer.setIsServerVisualDebug(visualDebug);
+    public static void main(String[] args) {
+        Main main = new Main();
+        main.setArgs(args);
+
+        Renderer renderer = new Renderer(main.game, main.networking);
+        renderer.setIsServerVisualDebug(main.visualDebug);
         renderer.init();
-        game.init();
+        main.game.init();
 
-        if (networking instanceof ClientNetworking) {
-            ClientNetworking c = (ClientNetworking) networking;
+        if (main.networking instanceof ClientNetworking) {
+            ClientNetworking c = (ClientNetworking) main.networking;
             c.connect();
         }
 
         renderer.renderLoop();
         renderer.cleanUp();
+    }
+
+    // Getters for testing
+    public INetworking getNetworking() {
+        return networking;
+    }
+
+    public boolean isVisualDebug() {
+        return visualDebug;
     }
 }

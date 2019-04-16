@@ -8,16 +8,11 @@ import asteroids.core.graphics.Renderer;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
-import com.esotericsoftware.minlog.Log;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
 
 public abstract class INetworking {
     final int portTCP = 55555;
@@ -34,7 +29,7 @@ public abstract class INetworking {
     protected ModifiableList<INetworked> networkeds = new ModifiableList<>();
     protected HashMap<Integer, List<Object>> waitingForSerialization = new HashMap<>();
 
-    protected List<INetworked> queuedForRemoval = new ArrayList<>();
+    protected ModifiableList<INetworked> queuedForRemoval = new ModifiableList<>();
 
     protected int networkedComponentCounter = 0;
 
@@ -68,6 +63,10 @@ public abstract class INetworking {
 
     protected void removeQueuedComponents() {
         for (INetworked n : queuedForRemoval) {
+            if (n == null) {
+                continue;
+            }
+
             n.getEntity().getRenderer().removeEntity(n.getEntity());
         }
         queuedForRemoval.clear();
@@ -124,12 +123,12 @@ public abstract class INetworking {
         for (int i = 1; i < split.length; i += 3) {
             try {
                 INetworked n = (INetworked) Class.forName(split[i]).newInstance();
-                n.setNetId(Integer.parseInt(split[i+1]));
+                n.setNetId(Integer.parseInt(split[i + 1]));
 
                 if (i + 2 >= split.length) {
                     n.setOwner("");
                 } else {
-                    n.setOwner(split[i+2]);
+                    n.setOwner(split[i + 2]);
                 }
 
                 e.addComponent(n);
