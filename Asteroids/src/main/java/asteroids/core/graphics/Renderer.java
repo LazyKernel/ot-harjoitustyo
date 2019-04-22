@@ -2,6 +2,7 @@ package asteroids.core.graphics;
 
 import asteroids.core.containers.Entity;
 import asteroids.core.containers.ModifiableList;
+import asteroids.core.graphics.ui.UIManager;
 import asteroids.core.networking.INetworking;
 import asteroids.core.threading.ConsoleThread;
 import asteroids.game.Game;
@@ -27,6 +28,7 @@ public class Renderer {
     private boolean isServerVisualDebug = false;
     private boolean running = true;
     private int entityIdCounter = 0;
+    private UIManager uiManager = null;
 
     private static Renderer renderer = null;
 
@@ -73,8 +75,6 @@ public class Renderer {
             glfwSetWindowPos(pWindow, (videoMode.width() - pWidth.get(0)) / 2, (videoMode.height() - pHeight.get(0)) / 2);
         }
 
-        glfwSetKeyCallback(pWindow, keyCallback = new KeyboardHandler());
-
         glfwMakeContextCurrent(pWindow);
         glfwSwapInterval(1);
         glfwShowWindow(pWindow);
@@ -82,6 +82,15 @@ public class Renderer {
         GL.createCapabilities();
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+        if (!getIsHeadlessServer()) {
+            uiManager = new UIManager();
+            uiManager.loadFont("src/main/resources/Roboto-Regular.ttf");
+            uiManager.init(pWindow);
+            uiManager.updateScreenDimensions(800, 600);
+        }
+
+        glfwSetKeyCallback(pWindow, keyCallback = new KeyboardHandler(uiManager));
     }
 
     public void renderLoop() {
@@ -93,6 +102,10 @@ public class Renderer {
         long lastTime = System.nanoTime();
         final float divisor = 1000000000.0f;
         while (!glfwWindowShouldClose(pWindow)) {
+            uiManager.beginInput();
+            glfwPollEvents();
+            uiManager.endInput(pWindow);
+
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             float delta = (System.nanoTime() - lastTime) / divisor;
@@ -116,9 +129,9 @@ public class Renderer {
 
                 e.render();
             }
+            uiManager.render();
 
             glfwSwapBuffers(pWindow);
-            glfwPollEvents();
         }
     }
 
@@ -228,6 +241,14 @@ public class Renderer {
     }
 
     public void quit() {
-        this.running = false;
+        if (getIsHeadlessServer()) {
+            this.running = false;
+        } else {
+            glfwSetWindowShouldClose(pWindow, true);
+        }
+    }
+
+    public UIManager getUiManager() {
+        return uiManager;
     }
 }

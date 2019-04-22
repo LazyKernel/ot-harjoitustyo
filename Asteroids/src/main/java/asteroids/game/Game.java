@@ -1,6 +1,8 @@
 package asteroids.game;
 
 import asteroids.core.containers.Entity;
+import asteroids.core.graphics.ui.UIManager;
+import asteroids.core.graphics.ui.elements.Window;
 import asteroids.game.components.Bullet;
 import asteroids.game.components.Player;
 import asteroids.core.graphics.Renderer;
@@ -20,6 +22,9 @@ public class Game {
             player.addComponent(playerComponent);
             renderer.addEntity(player);
         }
+
+        Window window = new Window("Test", true);
+        renderer.getUiManager().addElement(window);
     }
 
     public void update() {

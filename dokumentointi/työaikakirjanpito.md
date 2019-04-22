@@ -24,4 +24,8 @@
 | | 1 | testaamista |
 | 16.4. | 2 | testien kirjoittamista |
 | | 1 | sekvenssikaavio ja muuta viimeistelyä palautukseen |
+| 18.4. | 1 | ui systeemin koodailua |
+| 19.4. | 3 | uimanagerin koodaus |
+| 21.4. | 2 | uimanagerin korjaaminen |
+| 22.4. | 3 | ui managerin debuggaamista ja window elementin luominen |
 | yht | 46 |
