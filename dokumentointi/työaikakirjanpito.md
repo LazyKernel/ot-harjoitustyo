@@ -32,4 +32,4 @@
 | 25.4. | 2 | lisää elementtejä |
 | 26.4. | 4 | refraktorointia ja testien korjaamista |
 | | 2 | javadocin ja muun dokumentoinnin muokkaamista ja lisäämistä |
-| yht | ? |
+| yht | 67 |
