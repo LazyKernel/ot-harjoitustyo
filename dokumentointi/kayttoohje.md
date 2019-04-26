@@ -2,7 +2,7 @@
 Lataa uusin [release](https://github.com/LazyKernel/ot-harjoitustyo/releases/latest).
 
 ## Edellytykset ohjelman suorittamiseen
-Ohjelma tarvitsee käyttöliittymälle ja pelille omat shaderit kansiossa. Nämä tulevat releasen mukana. Näitä ei tarvita, jos ohjelman haluaa suorittaa komentolinjapohjaisena serverinä. 
+Ohjelma tarvitsee käyttöliittymälle ja pelille omat shaderit kansiossa sekä Roboto-fontin. Nämä tulevat releasen mukana. Näitä ei tarvita, jos ohjelman haluaa suorittaa komentolinjapohjaisena serverinä. 
 
 Ohjelma myös tällä hetkellä vaatii OpenGL-ajurit, jotka tukevat GLSL:n versiota 4.30, tosin tämä tulee luultavimmin poistumaan seuraavassa releasessa, sillä laitoksen koneilla ei ilmeisesti ole tarpeeksi uusia ajureita. 
 
