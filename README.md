@@ -8,13 +8,15 @@
   
 ## Linkkejä
 
-[UUSIN RELEASE](https://github.com/LazyKernel/ot-harjoitustyo/releases/tag/v1.0.1)
+[UUSIN RELEASE](https://github.com/LazyKernel/ot-harjoitustyo/releases/latest)
 
 [Määrittelydokumentti](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/dokumentointi/m%C3%A4%C3%A4rittelydokumentti.md)
 
 [Työaikakirjanpito](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/dokumentointi/ty%C3%B6aikakirjanpito.md)
 
 [Arkkitehtuuri](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/dokumentointi/arkkitehtuuri.md)
+
+[Käyttöohje](https://github.com/LazyKernel/ot-harjoitustyo/tree/master/dokumentointi/kayttoohje.md)
 
 ## Komentorivi
 ### Suorittaminen
@@ -44,6 +46,11 @@ Checkstyle-raportti löytyy tiedostosta _target/site/checkstyle.html_
 Suoritettavan jarin voi generoida komennolla
 ```
 mvn package
+```
+
+Javadocin voi generoida komennolla
+```
+mvn javadoc:javadoc
 ```
 
 ### Asetukset

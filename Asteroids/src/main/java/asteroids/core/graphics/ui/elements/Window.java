@@ -2,6 +2,7 @@ package asteroids.core.graphics.ui.elements;
 
 import asteroids.core.containers.Transform;
 import asteroids.core.graphics.ui.UIElement;
+import asteroids.core.input.KeyboardHandler;
 import org.joml.Vector2f;
 import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.system.MemoryStack;
@@ -13,16 +14,23 @@ public class Window extends UIElement {
     private boolean closeable;
     private int flags;
     private NkRect windowRect = null;
+    private boolean blocksInput;
 
     public Window() {
         name = "";
         closeable = true;
+        blocksInput = false;
+        getTransform().setPosition(new Vector2f(10, 10));
+        getTransform().setScale(new Vector2f(300, 200));
         updateFlags();
     }
 
-    public Window(String name, boolean closeable) {
+    public Window(String name, boolean closeable, boolean blocksInput) {
         this.name = name;
         this.closeable = closeable;
+        this.blocksInput = blocksInput;
+        getTransform().setPosition(new Vector2f(10, 10));
+        getTransform().setScale(new Vector2f(300, 200));
         updateFlags();
     }
 
@@ -33,11 +41,14 @@ public class Window extends UIElement {
     }
 
     public void init() {
-        getTransform().setPosition(new Vector2f(10, 10));
-        getTransform().setScale(new Vector2f(300, 200));
+        KeyboardHandler.setBlockInput(blocksInput);
     }
 
     public void render() {
+        if (getCtx() == null) {
+            return;
+        }
+
         if (windowRect == null) {
             // need to render it once or it is considered closed
             windowRect = NkRect.create();
@@ -56,6 +67,8 @@ public class Window extends UIElement {
                 }
             }
             nk_end(getCtx());
+        } else if (blocksInput) {
+            KeyboardHandler.setBlockInput(false);
         }
     }
 
@@ -70,6 +83,14 @@ public class Window extends UIElement {
     }
 
     public void destroy() {
+        for (UIElement e : elements) {
+            if (e == null) {
+                continue;
+            }
 
+            e.destroy();
+        }
+
+        KeyboardHandler.setBlockInput(false);
     }
 }

@@ -96,7 +96,7 @@ public class Player extends INetworked {
         }
     }
 
-    private void handleInput(int inputFlags, float deltaTime, boolean isServer) {
+    public void handleInput(int inputFlags, float deltaTime, boolean isServer) {
         if ((inputFlags & 0x1) != 0) {
             getTransform().rotate((float) Math.PI * deltaTime * 2);
         }

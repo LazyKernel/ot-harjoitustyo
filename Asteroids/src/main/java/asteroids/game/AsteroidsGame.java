@@ -1,15 +1,16 @@
 package asteroids.game;
 
+import asteroids.core.Game;
 import asteroids.core.containers.Entity;
-import asteroids.core.graphics.ui.UIManager;
-import asteroids.core.graphics.ui.elements.Window;
 import asteroids.game.components.Bullet;
 import asteroids.game.components.Player;
-import asteroids.core.graphics.Renderer;
 
-public class Game {
-    private Renderer renderer;
 
+public class AsteroidsGame extends Game {
+
+    MainMenu menu = null;
+
+    @Override
     public void init() {
         if (!renderer.getIsOffline()) {
             renderer.getNetworking().registerClass(Player.class);
@@ -21,25 +22,38 @@ public class Game {
             Player playerComponent = new Player();
             player.addComponent(playerComponent);
             renderer.addEntity(player);
-        }
 
-        Window window = new Window("Test", true);
-        renderer.getUiManager().addElement(window);
+            menu = new MainMenu();
+            menu.createMenu(renderer);
+        }
     }
 
+    @Override
     public void update() {
 
     }
 
+    @Override
     public void render() {
 
     }
 
+    @Override
     public void destroy() {
 
     }
 
-    public void setRenderer(Renderer renderer) {
-        this.renderer = renderer;
+    @Override
+    public void connected() {
+        if (menu != null) {
+            menu.destroy();
+        }
+    }
+
+    @Override
+    public void disconnected() {
+        if (menu != null) {
+            menu.createMenu(renderer);
+        }
     }
 }

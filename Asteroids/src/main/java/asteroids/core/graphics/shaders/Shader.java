@@ -9,6 +9,11 @@ public abstract class Shader {
     private int pShaderFrag = 0;
     private int pProgram = 0;
 
+    /**
+     * Loads, compiles, links and validates an Open GL vertex and fragment shader
+     * @param fileNameVert file name of the vertex shader
+     * @param fileNameFrag file name of the fragment shader
+     */
     protected void createShader(String fileNameVert, String fileNameFrag) {
         String source = FileLoader.loadFileAsString(fileNameVert);
         pShaderVert = glCreateShader(GL_VERTEX_SHADER);
@@ -35,6 +40,9 @@ public abstract class Shader {
         validateProgram();
     }
 
+    /**
+     * Deletes allocated resources
+     */
     public void destroy() {
         if (pShaderVert != 0) {
             glDeleteShader(pShaderVert);
@@ -86,10 +94,16 @@ public abstract class Shader {
         return true;
     }
 
+    /**
+     * Begins the usage of the shader
+     */
     public void bind() {
         glUseProgram(pProgram);
     }
 
+    /**
+     * Ends the usage of all shaders
+     */
     public void unbind() {
         glUseProgram(0);
     }

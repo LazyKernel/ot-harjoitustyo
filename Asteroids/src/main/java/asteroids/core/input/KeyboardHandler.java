@@ -10,6 +10,8 @@ public class KeyboardHandler extends GLFWKeyCallback {
     private static boolean[] keysHold = new boolean[65536];
     private static boolean[] keysPress = new boolean[65536];
 
+    private static boolean blockInput = false;
+
     private UIManager uiManager;
 
     public KeyboardHandler(UIManager uiManager) {
@@ -18,9 +20,14 @@ public class KeyboardHandler extends GLFWKeyCallback {
 
     @Override
     public void invoke(long pWindow, int key, int scanCode, int action, int modifiers) {
-        keysPress[key] = action == GLFW_PRESS;
-        keysHold[key] = action != GLFW_RELEASE;
-        uiManager.keyCallback(pWindow, key, action);
+        if (!blockInput) {
+            keysPress[key] = action == GLFW_PRESS;
+            keysHold[key] = action != GLFW_RELEASE;
+        }
+
+        if (uiManager != null) {
+            uiManager.keyCallback(pWindow, key, action);
+        }
     }
 
     public static boolean isKeyDown(int key) {
@@ -31,5 +38,13 @@ public class KeyboardHandler extends GLFWKeyCallback {
         boolean ret = keysPress[key];
         keysPress[key] = false;
         return ret;
+    }
+
+    public static boolean isBlockInput() {
+        return blockInput;
+    }
+
+    public static void setBlockInput(boolean blockInput) {
+        KeyboardHandler.blockInput = blockInput;
     }
 }

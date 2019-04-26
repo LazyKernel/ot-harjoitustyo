@@ -28,4 +28,8 @@
 | 19.4. | 3 | uimanagerin koodaus |
 | 21.4. | 2 | uimanagerin korjaaminen |
 | 22.4. | 3 | ui managerin debuggaamista ja window elementin luominen |
-| yht | 46 |
+| 23.4. | 2 | elementtien luomista |
+| 25.4. | 2 | lisää elementtejä |
+| 26.4. | 4 | refraktorointia ja testien korjaamista |
+| | 2 | javadocin ja muun dokumentoinnin muokkaamista ja lisäämistä |
+| yht | ? |

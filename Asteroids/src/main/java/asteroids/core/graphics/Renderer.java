@@ -1,12 +1,14 @@
 package asteroids.core.graphics;
 
+import asteroids.core.Game;
 import asteroids.core.containers.Entity;
 import asteroids.core.containers.ModifiableList;
 import asteroids.core.graphics.ui.UIManager;
+import asteroids.core.networking.ClientNetworking;
 import asteroids.core.networking.INetworking;
 import asteroids.core.threading.ConsoleThread;
-import asteroids.game.Game;
 import asteroids.core.input.KeyboardHandler;
+import org.joml.Vector2i;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
@@ -102,9 +104,15 @@ public class Renderer {
         long lastTime = System.nanoTime();
         final float divisor = 1000000000.0f;
         while (!glfwWindowShouldClose(pWindow)) {
-            uiManager.beginInput();
+            if (!getIsServerVisualDebug()) {
+                uiManager.beginInput();
+            }
+
             glfwPollEvents();
-            uiManager.endInput(pWindow);
+
+            if (!getIsServerVisualDebug()) {
+                uiManager.endInput(pWindow);
+            }
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -129,7 +137,10 @@ public class Renderer {
 
                 e.render();
             }
-            uiManager.render();
+
+            if (!getIsServerVisualDebug()) {
+                uiManager.render();
+            }
 
             glfwSwapBuffers(pWindow);
         }
@@ -163,14 +174,7 @@ public class Renderer {
     public void cleanUp() {
         networking.destroy();
         game.destroy();
-
-        for (Entity e : entities) {
-            if (e == null) {
-                continue;
-            }
-
-            e.destroy();
-        }
+        destroyEntities();
 
         if (getIsHeadlessServer() && !getIsServerVisualDebug()) {
             return;
@@ -180,6 +184,29 @@ public class Renderer {
         glfwDestroyWindow(pWindow);
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+    }
+
+    private void destroyEntities() {
+        for (Entity e : entities) {
+            if (e == null) {
+                continue;
+            }
+
+            e.destroy();
+        }
+
+        entities.clear();
+    }
+
+    public void connect(String name, String ip) {
+        networking.destroy();
+        destroyEntities();
+
+        ClientNetworking net = new ClientNetworking(ip, name);
+        net.setRenderer(this);
+        net.init();
+        net.connect();
+        networking = net;
     }
 
     public void addEntity(Entity entity) {
@@ -210,6 +237,10 @@ public class Renderer {
         }
 
         entities.remove(entityId);
+    }
+
+    public Game getGame() {
+        return game;
     }
 
     public boolean getIsServer() {
@@ -250,5 +281,18 @@ public class Renderer {
 
     public UIManager getUiManager() {
         return uiManager;
+    }
+
+    public Vector2i getWindowSize() {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer pWidth = stack.mallocInt(1);
+            IntBuffer pHeight = stack.mallocInt(1);
+            glfwGetWindowSize(pWindow, pWidth, pHeight);
+
+            return new Vector2i(pWidth.get(0), pHeight.get(0));
+        } catch (Exception e) {
+            System.err.println("An exception occurred while getting window size.\n" + e);
+            return new Vector2i(-1, -1);
+        }
     }
 }

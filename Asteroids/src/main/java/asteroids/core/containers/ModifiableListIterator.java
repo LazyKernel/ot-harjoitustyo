@@ -9,17 +9,31 @@ public class ModifiableListIterator<T> implements Iterator<T> {
     private int curPos;
     private int entityCounter;
 
-    public ModifiableListIterator(Object[] objects, int entityCounter) {
+    ModifiableListIterator(Object[] objects, int entityCounter) {
         this.objects = objects;
         this.entityCounter = entityCounter;
         this.curPos = 0;
     }
 
+    /**
+     * Checks if the list has more elements
+     *
+     * Might return true even if no more elements exists if they have been deleted within the loop
+     *
+     * @return true if more objects are on the list, false otherwise unless objects have been deleted
+     */
     @Override
     public boolean hasNext() {
         return curPos < entityCounter;
     }
 
+    /**
+     * Gets the next element in the list
+     *
+     * Not guaranteed to be nonnull if the list has been modified within the loop
+     *
+     * @return next element in the list or null
+     */
     @SuppressWarnings("unchecked")
     @Override
     public T next() {
@@ -34,6 +48,9 @@ public class ModifiableListIterator<T> implements Iterator<T> {
         return e;
     }
 
+    /**
+     * Not implemented yet
+     */
     @Override
     public void remove() {
         throw new NotImplementedException();

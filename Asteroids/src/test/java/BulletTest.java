@@ -1,7 +1,7 @@
 import asteroids.core.containers.Entity;
 import asteroids.core.graphics.Renderer;
 import asteroids.core.networking.ServerNetworking;
-import asteroids.game.Game;
+import asteroids.game.AsteroidsGame;
 import asteroids.game.components.Bullet;
 import org.joml.Vector2f;
 import org.junit.Before;
@@ -20,7 +20,7 @@ public class BulletTest {
     public void setUp() {
         networking = new ServerNetworking();
         networking.setUsername("test");
-        renderer = new Renderer(new Game(), networking);
+        renderer = new Renderer(new AsteroidsGame(), networking);
         entity = new Entity();
         renderer.addEntity(entity);
         bullet = new Bullet();

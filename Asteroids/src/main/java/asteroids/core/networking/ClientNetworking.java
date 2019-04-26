@@ -95,6 +95,7 @@ public class ClientNetworking extends INetworking {
             public void disconnected(Connection connection) {
                 // TODO: disconnected
                 System.out.println("Disconnected from server.");
+                getRenderer().getGame().disconnected();
             }
         });
     }

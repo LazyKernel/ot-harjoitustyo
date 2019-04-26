@@ -30,6 +30,10 @@ public abstract class UIElement {
         return transform;
     }
 
+    public void setTransform(Transform transform) {
+        this.transform = transform;
+    }
+
     public NkContext getCtx() {
         return ctx;
     }

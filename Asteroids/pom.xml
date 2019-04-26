@@ -69,6 +69,8 @@
 				<configuration>
 					<excludes>
 						<exclude>asteroids/core/graphics/*</exclude>
+						<exclude>asteroids/core/graphics/ui/*</exclude>
+						<exclude>asteroids/core/graphics/ui/elements/*</exclude>
 						<exclude>asteroids/core/graphics/shaders/*</exclude>
 						<exclude>asteroids/core/networking/*</exclude>
 					</excludes>

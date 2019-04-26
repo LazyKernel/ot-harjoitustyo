@@ -16,6 +16,12 @@ import java.nio.file.Paths;
 import static org.lwjgl.BufferUtils.createByteBuffer;
 
 public class FileLoader {
+    /**
+     * Load file as a string
+     *
+     * @param fileName file name of the file to be loaded
+     * @return string with file contents, can be empty
+     */
     public static String loadFileAsString(String fileName) {
         StringBuilder ret = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8))) {
@@ -32,15 +38,24 @@ public class FileLoader {
         return ret.toString();
     }
 
+    /**
+     * Load file as bytes
+     * @param fileName file name of the file to be loaded
+     * @return ByteBuffer of the file contents
+     * @throws IOException
+     */
     public static ByteBuffer loadFileAsByteBuffer(String fileName) throws IOException {
         ByteBuffer buffer;
 
         Path path = Paths.get(fileName);
         if (Files.isReadable(path)) {
             try (SeekableByteChannel fc = Files.newByteChannel(path)) {
-                buffer = createByteBuffer((int)fc.size() + 1);
-                while (fc.read(buffer) != -1) {
+                buffer = createByteBuffer((int) fc.size() + 1);
+                int read;
+                do {
+                    read = fc.read(buffer);
                 }
+                while (read != -1);
             }
         } else {
             try (

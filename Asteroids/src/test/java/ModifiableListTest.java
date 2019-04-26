@@ -90,6 +90,17 @@ public class ModifiableListTest
     }
 
     @Test
+    public void testResizeSmall() {
+        ModifiableList<Object> l = new ModifiableList<>(5);
+        for (int i = 0; i < 5; i++) {
+            l.add("");
+        }
+
+        assertEquals(5, l.size());
+        assertEquals(10, l.capacity());
+    }
+
+    @Test
     public void testIterator()
     {
         for (int i = 0; i < 50; i++)

@@ -4,11 +4,11 @@ import asteroids.core.networking.ClientNetworking;
 import asteroids.core.networking.INetworking;
 import asteroids.core.networking.OfflineNetworking;
 import asteroids.core.networking.ServerNetworking;
-import asteroids.game.Game;
+import asteroids.game.AsteroidsGame;
 import asteroids.core.graphics.Renderer;
 
 public class Main {
-    private Game game = new Game();
+    private AsteroidsGame asteroidsGame = new AsteroidsGame();
     private INetworking networking = null;
     private boolean visualDebug = false;
 
@@ -38,10 +38,10 @@ public class Main {
         Main main = new Main();
         main.setArgs(args);
 
-        Renderer renderer = new Renderer(main.game, main.networking);
+        Renderer renderer = new Renderer(main.asteroidsGame, main.networking);
         renderer.setIsServerVisualDebug(main.visualDebug);
         renderer.init();
-        main.game.init();
+        main.asteroidsGame.init();
 
         if (main.networking instanceof ClientNetworking) {
             ClientNetworking c = (ClientNetworking) main.networking;

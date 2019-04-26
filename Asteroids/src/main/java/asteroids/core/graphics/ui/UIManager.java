@@ -52,7 +52,7 @@ public class UIManager {
     private final int colorLoc = 3;
     private final int texLoc = 4;
 
-    private final int maxBufferSize = 4096;
+    private final int maxBufferSize = 65536;
 
     private int windowWidth;
     private int windowHeight;
@@ -93,26 +93,26 @@ public class UIManager {
         setUpCallbacks(window);
         nk_init(ctx, allocator, null);
         ctx.clip(it -> it
-        .copy((handle, text, len) -> {
-            if (len == 0) {
-                return;
-            }
+            .copy((handle, text, len) -> {
+                if (len == 0) {
+                    return;
+                }
 
-            try (MemoryStack stack = MemoryStack.stackPush()) {
-                ByteBuffer str = stack.malloc(len + 1);
-                MemoryUtil.memCopy(text, MemoryUtil.memAddress(str), len);
-                str.put(len, (byte) 0);
-                glfwSetClipboardString(window, str);
-            } catch (Exception e) {
-                System.out.println("init(): Exception caught while pushing into a stack.\n" + e.getMessage());
-            }
-        })
-        .paste((handle, edit) -> {
-            long text = nglfwGetClipboardString(window);
-            if (text != NULL) {
-                nnk_textedit_paste(edit, text, nnk_strlen(text));
-            }
-        }));
+                try (MemoryStack stack = MemoryStack.stackPush()) {
+                    ByteBuffer str = stack.malloc(len + 1);
+                    MemoryUtil.memCopy(text, MemoryUtil.memAddress(str), len);
+                    str.put(len, (byte) 0);
+                    glfwSetClipboardString(window, str);
+                } catch (Exception e) {
+                    System.out.println("init(): Exception caught while pushing into a stack.\n" + e.getMessage());
+                }
+            })
+            .paste((handle, edit) -> {
+                long text = nglfwGetClipboardString(window);
+                if (text != NULL) {
+                    nnk_textedit_paste(edit, text, nnk_strlen(text));
+                }
+            }));
 
         nk_buffer_init(cmds, allocator, maxBufferSize);
         setupBuffers();
@@ -194,10 +194,10 @@ public class UIManager {
                 }
                 glBindTexture(GL_TEXTURE_2D, cmd.texture().id());
                 glScissor(
-                        (int)(cmd.clip_rect().x()),
-                        (int)((windowHeight - (int)(cmd.clip_rect().y() + cmd.clip_rect().h()))),
-                        (int)(cmd.clip_rect().w()),
-                        (int)(cmd.clip_rect().h())
+                        (int) (cmd.clip_rect().x()),
+                        (int) ((windowHeight - (int) (cmd.clip_rect().y() + cmd.clip_rect().h()))),
+                        (int) (cmd.clip_rect().w()),
+                        (int) (cmd.clip_rect().h())
                 );
                 glDrawElements(GL_TRIANGLES, cmd.elem_count(), GL_UNSIGNED_SHORT, offset);
                 offset += cmd.elem_count() * 2;
@@ -217,10 +217,10 @@ public class UIManager {
     }
 
     public void updateScreenDimensions(int width, int height) {
-        projMatrix = new Matrix4f(  2.0f / width, 0.0f, 0.0f, 0.0f,
-                                    0.0f, -2.0f / height, 0.0f, 0.0f,
-                                    0.0f, 0.0f, -1.0f, 0.0f,
-                                    -1.0f, 1.0f, 0.0f, 1.0f);
+        projMatrix = new Matrix4f(2.0f / width, 0.0f, 0.0f, 0.0f,
+                0.0f, -2.0f / height, 0.0f, 0.0f,
+                0.0f, 0.0f, -1.0f, 0.0f,
+                -1.0f, 1.0f, 0.0f, 1.0f);
         glViewport(0, 0, width, height);
         windowWidth = width;
         windowHeight = height;
@@ -286,10 +286,10 @@ public class UIManager {
     }
 
     private void setupFont() {
-        int BITMAP_W = 1024;
-        int BITMAP_H = 1024;
+        int bitmapW = 1024;
+        int bitmapH = 1024;
 
-        int FONT_HEIGHT = 18;
+        int fontHeight = 18;
         int fontTexID = glGenTextures();
 
         STBTTFontinfo fontInfo = STBTTFontinfo.create();
@@ -300,29 +300,29 @@ public class UIManager {
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
             stbtt_InitFont(fontInfo, ttf); // access violation here
-            scale = stbtt_ScaleForPixelHeight(fontInfo, FONT_HEIGHT);
+            scale = stbtt_ScaleForPixelHeight(fontInfo, fontHeight);
 
             IntBuffer d = stack.mallocInt(1);
             stbtt_GetFontVMetrics(fontInfo, null, d, null);
             descent = d.get(0) * scale;
 
-            ByteBuffer bitmap = MemoryUtil.memAlloc(BITMAP_W * BITMAP_H);
+            ByteBuffer bitmap = MemoryUtil.memAlloc(bitmapW * bitmapH);
 
             STBTTPackContext pc = STBTTPackContext.mallocStack(stack);
-            stbtt_PackBegin(pc, bitmap, BITMAP_W, BITMAP_H, 0, 1, NULL);
+            stbtt_PackBegin(pc, bitmap, bitmapW, bitmapH, 0, 1, NULL);
             stbtt_PackSetOversampling(pc, 4, 4);
-            stbtt_PackFontRange(pc, ttf, 0, FONT_HEIGHT, 32, cdata);
+            stbtt_PackFontRange(pc, ttf, 0, fontHeight, 32, cdata);
             stbtt_PackEnd(pc);
 
             // Convert R8 to RGBA8
-            ByteBuffer texture = MemoryUtil.memAlloc(BITMAP_W * BITMAP_H * 4);
+            ByteBuffer texture = MemoryUtil.memAlloc(bitmapW * bitmapH * 4);
             for (int i = 0; i < bitmap.capacity(); i++) {
                 texture.putInt((bitmap.get(i) << 24) | 0x00FFFFFF);
             }
             texture.flip();
 
             glBindTexture(GL_TEXTURE_2D, fontTexID);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, BITMAP_W, BITMAP_H, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, texture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, bitmapW, bitmapH, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, texture);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
@@ -332,36 +332,36 @@ public class UIManager {
 
         defaultFont
                 .width((handle, h, text, len) -> {
-                    float text_width = 0;
+                    float textWidth = 0;
                     try (MemoryStack stack = MemoryStack.stackPush()) {
                         IntBuffer unicode = stack.mallocInt(1);
 
-                        int glyph_len = nnk_utf_decode(text, MemoryUtil.memAddress(unicode), len);
-                        int text_len  = glyph_len;
+                        int glyphLen = nnk_utf_decode(text, MemoryUtil.memAddress(unicode), len);
+                        int textLen  = glyphLen;
 
-                        if (glyph_len == 0) {
+                        if (glyphLen == 0) {
                             return 0;
                         }
 
                         IntBuffer advance = stack.mallocInt(1);
-                        while (text_len <= len && glyph_len != 0) {
+                        while (textLen <= len && glyphLen != 0) {
                             if (unicode.get(0) == NK_UTF_INVALID) {
                                 break;
                             }
 
                             /* query currently drawn glyph information */
                             stbtt_GetCodepointHMetrics(fontInfo, unicode.get(0), advance, null);
-                            text_width += advance.get(0) * scale;
+                            textWidth += advance.get(0) * scale;
 
                             /* offset next glyph */
-                            glyph_len = nnk_utf_decode(text + text_len, MemoryUtil.memAddress(unicode), len - text_len);
-                            text_len += glyph_len;
+                            glyphLen = nnk_utf_decode(text + textLen, MemoryUtil.memAddress(unicode), len - textLen);
+                            textLen += glyphLen;
                         }
                     }
-                    return text_width;
+                    return textWidth;
                 })
-                .height(FONT_HEIGHT)
-                .query((handle, font_height, glyph, codepoint, nextCodepoint) -> {
+                .height(fontHeight)
+                .query((handle, height, glyph, codepoint, nextCodepoint) -> {
                     try (MemoryStack stack = MemoryStack.stackPush()) {
                         FloatBuffer x = stack.floats(0.0f);
                         FloatBuffer y = stack.floats(0.0f);
@@ -369,14 +369,14 @@ public class UIManager {
                         STBTTAlignedQuad q = STBTTAlignedQuad.mallocStack(stack);
                         IntBuffer advance = stack.mallocInt(1);
 
-                        stbtt_GetPackedQuad(cdata, BITMAP_W, BITMAP_H, codepoint - 32, x, y, q, false);
+                        stbtt_GetPackedQuad(cdata, bitmapW, bitmapH, codepoint - 32, x, y, q, false);
                         stbtt_GetCodepointHMetrics(fontInfo, codepoint, advance, null);
 
                         NkUserFontGlyph ufg = NkUserFontGlyph.create(glyph);
 
                         ufg.width(q.x1() - q.x0());
                         ufg.height(q.y1() - q.y0());
-                        ufg.offset().set(q.x0(), q.y0() + (FONT_HEIGHT + descent));
+                        ufg.offset().set(q.x0(), q.y0() + (height + descent));
                         ufg.xadvance(advance.get(0) * scale);
                         ufg.uv(0).set(q.s0(), q.t0());
                         ufg.uv(1).set(q.s1(), q.t1());
