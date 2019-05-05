@@ -18,8 +18,8 @@ Sovellusta on testattu [käyttöohjeen](https://github.com/LazyKernel/ot-harjoit
 Pelin toiminnallisuudet on käyty läpi ja testattu. Virheellisten arvojen syöttämistä on myös testattu. Virheellisten pakettien käsittelyä ei ole testattu.
 
 ### Testikattavuus
-Sovelluksen testauksen rivikattavuus on  ja haarautumakattavuus on , kun käyttöliittymää ja OpenGL-renderöintiä ei huomioida.
-![testikattavuus]()
+Sovelluksen testauksen rivikattavuus on 69% ja haarautumakattavuus on 44%, kun käyttöliittymää, OpenGL-renderöintiä ja nettiluokkia ei huomioida.
+![testikattavuus](https://i.imgur.com/aQcMk8x.png)
 
 ## Sovellukseen jääneet laatuongelmat
 Koodi on paikoittain hieman hankalasti luettavaa, lähinnä UIManagerissa. UIManager on myös hyvin pitkä luokka, jossa on paljon suuria metodeja. 
