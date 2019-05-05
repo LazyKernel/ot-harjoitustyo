@@ -12,7 +12,7 @@ Pelin komponenttien testaaminen testaa samalla monia muita luokkia, sekä niiden
 
 ## Järjestelmätestaus
 ### Asennus
-Sovellusta on testattu [käyttöohjeen](https://github.com/LazyKernel/ot-harjoitustyo/tree/master/dokumentointi/kayttoohje.md) kuvaamalla tavalla Window-ympäristössä. 
+Sovellusta on testattu [käyttöohjeen](https://github.com/LazyKernel/ot-harjoitustyo/tree/master/dokumentointi/kayttoohje.md) kuvaamalla tavalla Window-ympäristössä. Headless-serveriä on testattu linux-serverillä.
 
 ### Toiminnallisuudet
 Pelin toiminnallisuudet on käyty läpi ja testattu. Virheellisten arvojen syöttämistä on myös testattu. Virheellisten pakettien käsittelyä ei ole testattu.

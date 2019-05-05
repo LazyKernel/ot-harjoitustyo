@@ -13,6 +13,7 @@ java -jar asteroids.jar <mahdolliset argumentit>
 ```
 
 Mahdollisia argumentteja ovat:
+
 | argumentti | tietoa |
 | :----: | :----: |
 | `-o` | Offline, ei yhdistä serverille, mutta sallii pelaamisen yksin. Suoritetaan oletusarvoisesti, jos muita argumentteja ei annettu. |

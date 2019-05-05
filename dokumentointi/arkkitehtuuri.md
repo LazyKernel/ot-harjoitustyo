@@ -26,7 +26,7 @@ Kuvissa näkyvien pakkausten lisäksi on vielä yksi pakkaus fysiikkaenginelle.
 Kun käyttäjä yhdistää serverille, clientin ja serverin kommunikointi näyttää suunnilleen seuraavalta, olettaen, että virheitä ei tapahdu:
 ![sekvenssi1](https://i.imgur.com/46W0bMz.png)
 
-Tämän jälkeen serveri ja client lähettävät paketteja toisilleen maksimissaan kerran 16 ms. Jokainen _INetworked_ lähettää yhden paketin maksimissaan 60 kertaa sekunnissa.
+Tämän jälkeen serveri ja client lähettävät paketteja toisilleen kerran 16 ms. Jokainen _INetworked_ lähettää yhden paketin maksimissaan 60 kertaa sekunnissa.
 
 Kun client poistuu pelistä, kaikki tämän omistamat objektit poistetaan serveriltä ja kaikkien muiden clienttien pelistä.
 
