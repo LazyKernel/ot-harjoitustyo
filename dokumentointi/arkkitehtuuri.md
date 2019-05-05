@@ -1,4 +1,6 @@
 # Arkkitehtuurikuvaus
+Kai reaaliaikainen networking lasketaan internetiin tiedon tallentamiseksi, varsinkin kun serveri voi teoriassa olla päällä vaikka kuinka kauan? :D
+
 ## Rakenne
 Projektin rakenne noudattaa suunnilleen Entity-Component -systeemiä. Pelin logiikka on pääosin komponenteissa ja Game-luokassa. Komponenteissa on _init_, _render_, _update_ ja _destroy_ -metodit.
 * _init_: alustaa luokan tarvitsemat resurssit (esim. opengl objektit)
