@@ -6,6 +6,7 @@ import asteroids.core.containers.ModifiableList;
 import asteroids.core.graphics.ui.UIManager;
 import asteroids.core.networking.ClientNetworking;
 import asteroids.core.networking.INetworking;
+import asteroids.core.physics.PhysicsEngine;
 import asteroids.core.threading.ConsoleThread;
 import asteroids.core.input.KeyboardHandler;
 import org.joml.Vector2i;
@@ -21,6 +22,9 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+/**
+ * Main engine for the game. Handles pretty much everything
+ */
 public class Renderer {
     private long pWindow = 0;
     private ModifiableList<Entity> entities = new ModifiableList<>();
@@ -31,6 +35,7 @@ public class Renderer {
     private boolean running = true;
     private int entityIdCounter = 0;
     private UIManager uiManager = null;
+    private PhysicsEngine physics;
 
     private static Renderer renderer = null;
 
@@ -40,8 +45,12 @@ public class Renderer {
         this.networking = networking;
         networking.setRenderer(this);
         renderer = this;
+        physics = new PhysicsEngine();
     }
 
+    /**
+     * Initializes all other engines and the main window or console thread if this is a headless server
+     */
     public void init() {
         networking.init();
 
@@ -95,6 +104,10 @@ public class Renderer {
         glfwSetKeyCallback(pWindow, keyCallback = new KeyboardHandler(uiManager));
     }
 
+    /**
+     * Main render loop for the game. If this is a headless server it switches to using server render loop
+     * @see Renderer#renderLoopServer()
+     */
     public void renderLoop() {
         if (getIsHeadlessServer() && !getIsServerVisualDebug()) {
             renderLoopServer();
@@ -118,7 +131,7 @@ public class Renderer {
 
             float delta = (System.nanoTime() - lastTime) / divisor;
             networking.preUpdate(delta);
-            game.update();
+            game.update(delta);
             for (Entity e : entities) {
                 if (e == null) {
                     continue;
@@ -126,6 +139,9 @@ public class Renderer {
 
                 e.update(delta);
             }
+
+            physics.update(delta, getIsServer());
+
             networking.postUpdate(delta);
             lastTime = System.nanoTime();
 
@@ -146,13 +162,16 @@ public class Renderer {
         }
     }
 
+    /**
+     * Render loop for the headless server
+     */
     public void renderLoopServer() {
         long lastTime = System.nanoTime();
         final float divisor = 1000000000.0f;
         while (running) {
             float delta = (System.nanoTime() - lastTime) / divisor;
             networking.preUpdate(delta);
-            game.update();
+            game.update(delta);
             for (Entity e : entities) {
                 if (e == null) {
                     continue;
@@ -160,6 +179,9 @@ public class Renderer {
 
                 e.update(delta);
             }
+
+            physics.update(delta, true);
+
             networking.postUpdate(delta);
             lastTime = System.nanoTime();
 
@@ -171,6 +193,9 @@ public class Renderer {
         }
     }
 
+    /**
+     * Clean up all entities, engines and the game
+     */
     public void cleanUp() {
         networking.destroy();
         game.destroy();
@@ -198,6 +223,11 @@ public class Renderer {
         entities.clear();
     }
 
+    /**
+     * Connect to a server
+     * @param name user name
+     * @param ip ip of the server
+     */
     public void connect(String name, String ip) {
         networking.destroy();
         destroyEntities();
@@ -209,6 +239,10 @@ public class Renderer {
         networking = net;
     }
 
+    /**
+     * Add a new entity. If this is a server, also gives it an id that's replicated over the net
+     * @param entity new entity to add
+     */
     public void addEntity(Entity entity) {
         if (getIsServer()) {
             entity.setEntityId(entityIdCounter++);
@@ -267,10 +301,17 @@ public class Renderer {
         return networking;
     }
 
+    public PhysicsEngine getPhysics() {
+        return physics;
+    }
+
     public static Renderer getRenderer() {
         return renderer;
     }
 
+    /**
+     * Close the game or server
+     */
     public void quit() {
         if (getIsHeadlessServer()) {
             this.running = false;
@@ -283,6 +324,10 @@ public class Renderer {
         return uiManager;
     }
 
+    /**
+     * Returns the current size of the window
+     * @return 2d int vector containing width in x and height in y
+     */
     public Vector2i getWindowSize() {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1);

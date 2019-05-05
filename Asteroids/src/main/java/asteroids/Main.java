@@ -12,12 +12,16 @@ public class Main {
     private INetworking networking = null;
     private boolean visualDebug = false;
 
+    /**
+     * Set options from command line args
+     * @param args array of args
+     */
     public void setArgs(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-o")) {
                 networking = new OfflineNetworking();
             } else if (args[i].equals("-s")) {
-                networking = new ServerNetworking();
+                networking = new ServerNetworking(4);
             } else if (args[i].equals("-c") && i + 1 < args.length) {
                 if (i + 2 < args.length) {
                     networking = new ClientNetworking(args[i + 1], args[i + 2]);

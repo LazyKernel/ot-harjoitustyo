@@ -17,7 +17,7 @@ _Core_ sisältää pelimoottorin, joka on erillinen osa pelistä ja sitä voisi 
 
 _Game_ sisältää itse pelin logiikan ja sille erityiset komponentit.
 
-Kuvissa näkyvien pakkausten lisäksi on vielä tulossa yksi pakkaus fysiikkaenginelle.
+Kuvissa näkyvien pakkausten lisäksi on vielä yksi pakkaus fysiikkaenginelle.
 ![pakkausrakenne1](https://i.imgur.com/52wDCqB.png)
 ![pakkausrakenne2](https://i.imgur.com/NY2bd2s.png)
 
@@ -32,6 +32,8 @@ Kun client poistuu pelistä, kaikki tämän omistamat objektit poistetaan server
 
 
 ## Käyttöliittymä
-Ohjelma sisältää _Nuklear_-kirjastolla tehdyn käyttöliittymän. Tällä hetkellä voi luoda vain nappeja, ikkunoita, tekstejä, tekstikenttiä, rivejä ja ryhmiä, mutta mikään ei estä uusien elementtien luomista. Tarvitsee vain laajentaa _UIElement_-luokkaa ja lisätä tämä elementti _UIManageriin_ valmiiksi luotujen elementtien tavoin.
+Ohjelma sisältää _Nuklear_-kirjastolla tehdyn käyttöliittymän. Tällä hetkellä voi luoda vain nappeja, ikkunoita, tekstejä, tekstikenttiä ja rivejä, mutta mikään ei estä uusien elementtien luomista. Tarvitsee vain laajentaa _UIElement_-luokkaa ja lisätä tämä elementti _UIManageriin_ valmiiksi luotujen elementtien tavoin.
 
 Tällä hetkellä ohjelmassa on yksi ikkuna alussa, jos komentolinjalta ei ole annettu muita ohjeita. Se näkyy aivan alussa ja jos sen sulkee, aloitetaan peli offline-tilassa. Käyttöliittymässä on tila pelaajan nimen ja serverin ip:n kirjoittamiselle sekä napit serveriin yhdistämiseen tai serverin katseluun. Näyttö sulkeutuu, kun peliin yhdistetään ja se avautuu uudelleen, jos serveriin kadotetaan yhteys.
+
+Pelissä on sivupaneeli, joka liukuu esiin, kun hiiri viedään tarpeeksi lähelle oikeaa reunaa. Kun hiiri viedään pois tästä paneelista, se liukuu takaisin pois näkyvistä.

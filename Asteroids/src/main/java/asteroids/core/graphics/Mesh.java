@@ -25,7 +25,12 @@ public class Mesh extends EntityComponent {
     private Vector3f[] points = new Vector3f[0];
     private int vertCount = 0;
 
+    private int colorLoc = 0;
+    private int transformLoc = 1;
+    private int posLoc = 2;
+
     private boolean pendingUpdate = false;
+    private boolean render = true;
 
     @Override
     public void init() {
@@ -34,24 +39,28 @@ public class Mesh extends EntityComponent {
 
     @Override
     public void render() {
+        if (!render) {
+            return;
+        }
+
         if (points.length <= 0 || shader == null) {
             return;
         }
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
             glBindVertexArray(pVAO);
-            glEnableVertexAttribArray(0);
+            glEnableVertexAttribArray(posLoc);
             glEnable(GL_MULTISAMPLE);
             shader.bind();
 
-            glUniform3f(1, color.x, color.y, color.z);
-            glUniformMatrix4fv(2, false, getTransform().getTransformMatrix().get(stack.mallocFloat(16)));
+            glUniform3f(colorLoc, color.x, color.y, color.z);
+            glUniformMatrix4fv(transformLoc, false, getTransform().getTransformMatrix().get(stack.mallocFloat(16)));
 
             glDrawArrays(drawType, 0, vertCount);
 
             shader.unbind();
             glDisable(GL_MULTISAMPLE);
-            glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(posLoc);
             glBindVertexArray(0);
         }
     }
@@ -88,6 +97,10 @@ public class Mesh extends EntityComponent {
 
             shader = new MeshShader();
             shader.init();
+
+            colorLoc = glGetUniformLocation(shader.getProgram(), "customColor");
+            transformLoc = glGetUniformLocation(shader.getProgram(), "transform");
+            posLoc = glGetAttribLocation(shader.getProgram(), "vertPos");
 
             pendingUpdate = false;
         }
@@ -133,14 +146,41 @@ public class Mesh extends EntityComponent {
         return points;
     }
 
+    /**
+     * Set new points to render. Sets points to be pending update
+     * @param points new points
+     */
     public void setPoints(Vector3f[] points) {
         this.points = points;
         vertCount = this.points.length;
         pendingUpdate = true;
     }
 
+    /**
+     * Set points and change draw type
+     * @see Mesh#setPoints(Vector3f[])
+     * @see Mesh#setDrawType(int)
+     * @param points points to add
+     * @param drawType new draw type
+     */
     public void setPoints(Vector3f[] points, int drawType) {
         setDrawType(drawType);
         setPoints(points);
+    }
+
+    /**
+     * Is this mesh currently rendered
+     * @return true if it is
+     */
+    public boolean isRendered() {
+        return render;
+    }
+
+    /**
+     * Should this mesh be rendered
+     * @param render true if it should
+     */
+    public void setRender(boolean render) {
+        this.render = render;
     }
 }

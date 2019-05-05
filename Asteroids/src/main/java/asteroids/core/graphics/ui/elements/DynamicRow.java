@@ -4,15 +4,13 @@ import asteroids.core.graphics.ui.UIElement;
 
 import static org.lwjgl.nuklear.Nuklear.nk_layout_row_dynamic;
 
+/**
+ * Dynamic row for containing other ui elements
+ */
 public class DynamicRow extends UIElement {
 
     private float height;
     private int itemsPerRow;
-
-    public DynamicRow() {
-        height = 30;
-        itemsPerRow = 1;
-    }
 
     public DynamicRow(float height, int itemsPerRow) {
         this.height = height;

@@ -1,3 +1,5 @@
+package asteroids;
+
 import asteroids.core.containers.Entity;
 import asteroids.core.containers.EntityComponent;
 import asteroids.core.containers.Transform;

@@ -2,9 +2,9 @@
 Lataa uusin [release](https://github.com/LazyKernel/ot-harjoitustyo/releases/latest).
 
 ## Edellytykset ohjelman suorittamiseen
-Ohjelma tarvitsee käyttöliittymälle ja pelille omat shaderit kansiossa sekä Roboto-fontin. Nämä tulevat releasen mukana. Näitä ei tarvita, jos ohjelman haluaa suorittaa komentolinjapohjaisena serverinä. 
+Ohjelma tarvitsee käyttöliittymälle ja pelille omat shaderit sekä Roboto-fontin. Nämä tulevat releasen mukana. Näitä ei tarvita, jos ohjelman haluaa suorittaa komentolinjapohjaisena serverinä. 
 
-Ohjelma myös tällä hetkellä vaatii OpenGL-ajurit, jotka tukevat GLSL:n versiota 4.30, tosin tämä tulee luultavimmin poistumaan seuraavassa releasessa, sillä laitoksen koneilla ei ilmeisesti ole tarpeeksi uusia ajureita. 
+Ohjelma myös vaatii OpenGL-ajurit, jotka tukevat OpenGL:n versiota 3.3.
 
 ## Ohjelman käynnistäminen
 Ohjelma käynnistetään komennolla
@@ -32,6 +32,10 @@ Sovellus käynnistyy yhdistämisnäkymään, jos komentolinjalta ei ole annettu 
 _Name_-kenttään kirjoitetaan luonnollisesti pelaajan nimi ja _IP_-kenttään serverin ip-osoite.
 
 Jos haluat pelata offline-tilassa, voit painaa oikean yläkulman raksia.
+
+### Pelaaminen
+Pelaaja kääntyy __A__ ja __D__-napeilla sekä menee eteen- ja taaksepäin __W__ ja __S__-napeilla. Ampua voi __välilyönnillä__. Pistenäkymän saa auki viemällä kursorin lähelle ikkunan oikeaa reunaa.
+
 
 ## Server
 ### Käynnistäminen

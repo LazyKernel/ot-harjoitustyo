@@ -14,6 +14,9 @@ import org.joml.Vector3f;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Base class for networking types
+ */
 public abstract class INetworking {
     final int portTCP = 55555;
     final int portUDP = 55556;
@@ -39,6 +42,9 @@ public abstract class INetworking {
 
     protected float lastDelta = 0.0f;
 
+    /**
+     * Registers some common engine components in Kryo
+     */
     public INetworking() {
         registerClass(INetworked.class);
         registerClass(NetPacket.class);
@@ -48,6 +54,11 @@ public abstract class INetworking {
         registerClass(Mesh.class);
     }
 
+    /**
+     * Add a networked component and assign a net id to it if this is a server
+     * @see INetworked#setNetId(int)
+     * @param component component to add
+     */
     public void addNetworkedComponent(INetworked component) {
         if (isServer) {
             component.setNetId(getNewNetId());
@@ -56,11 +67,20 @@ public abstract class INetworking {
         networkeds.add(component);
     }
 
-    // server cant remove components before sending the message to clients
+    /**
+     * Server cant remove components before sending the message to clients, so we queue it for removal instead of just removing it.
+     * Removed after postUpdate
+     * @see INetworking#postUpdate(float)
+     * @param component component to remove after postUpdate
+     */
     public void queueForRemoval(INetworked component) {
         queuedForRemoval.add(component);
     }
 
+    /**
+     * Remove queued components. Call at the end of postUpdate
+     * @see INetworking#postUpdate(float)
+     */
     protected void removeQueuedComponents() {
         for (INetworked n : queuedForRemoval) {
             if (n == null) {
@@ -74,10 +94,6 @@ public abstract class INetworking {
 
     public void removeNetworkedComponent(INetworked component) {
         networkeds.remove(component);
-    }
-
-    public void setIsServer(boolean isServer) {
-        this.isServer = isServer;
     }
 
     public boolean getIsServer() {
@@ -103,18 +119,28 @@ public abstract class INetworking {
 
     public abstract int getNewNetId();
 
+    /**
+     * Encode an entity to string
+     * @param e entity to encode
+     * @return string that can be sent over the net
+     */
     protected String encodeEntity(Entity e) {
         StringBuilder builder = new StringBuilder();
         builder.append(e.getEntityId());
 
         List<INetworked> list = e.getComponentsOfType(INetworked.class);
         for (INetworked n : list) {
-            builder.append(";").append(n.getClass().getName()).append(";").append(n.getNetId()).append(";").append(n.getOwner());
+            builder.append(';').append(n.getClass().getName()).append(';').append(n.getNetId()).append(';').append(n.getOwner());
         }
 
         return builder.toString();
     }
 
+    /**
+     * Decode a string received over the net to an entity
+     * @param data string containing the entity
+     * @return new entity from the string
+     */
     protected Entity decodeEntity(String data) {
         String[] split = data.split(";");
         Entity e = new Entity();
@@ -152,7 +178,11 @@ public abstract class INetworking {
         this.username = username;
     }
 
-    // game has to do this
+    /**
+     * All classes that are sent over the net have to be registered first.
+     * They also need to be registered in the same order in both the client and server.
+     * @param type class to register
+     */
     public void registerClass(Class type) {
         server.getKryo().register(type);
         client.getKryo().register(type);

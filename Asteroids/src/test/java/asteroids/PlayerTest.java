@@ -1,3 +1,5 @@
+package asteroids;
+
 import asteroids.core.containers.Entity;
 import asteroids.core.containers.EntityComponent;
 import asteroids.core.graphics.Renderer;
@@ -24,7 +26,7 @@ public class PlayerTest {
 
     @Before
     public void setUp() {
-        networking = new ServerNetworking();
+        networking = new ServerNetworking(4);
         networking.setUsername("test");
         renderer = new Renderer(new AsteroidsGame(), networking);
         entity = new Entity();

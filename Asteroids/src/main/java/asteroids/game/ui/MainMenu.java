@@ -1,4 +1,4 @@
-package asteroids.game;
+package asteroids.game.ui;
 
 import asteroids.core.containers.Transform;
 import asteroids.core.graphics.Renderer;
@@ -14,6 +14,9 @@ import java.nio.charset.Charset;
 import static org.lwjgl.nuklear.Nuklear.NK_TEXT_ALIGN_BOTTOM;
 import static org.lwjgl.nuklear.Nuklear.NK_TEXT_ALIGN_LEFT;
 
+/**
+ * Main menu ui
+ */
 public class MainMenu implements IButtonCallback {
 
     private Window window = null;
@@ -21,6 +24,10 @@ public class MainMenu implements IButtonCallback {
     private TextField ipField = null;
     private Renderer renderer = null;
 
+    /**
+     * Creates the main menu
+     * @param renderer current renderer
+     */
     public void createMenu(Renderer renderer) {
         this.renderer = renderer;
 
@@ -32,12 +39,12 @@ public class MainMenu implements IButtonCallback {
         Label ipLabel = new Label("IP", NK_TEXT_ALIGN_LEFT | NK_TEXT_ALIGN_BOTTOM);
         ipField = new TextField("okay.works", 50, false, Nuklear::nnk_filter_ascii, Charset.forName("US-ASCII"));
         Button connectButton = new Button("Connect", this, "connect");
-        // Add delimeter?
+        Label emptyLabel = new Label("", NK_TEXT_ALIGN_LEFT);
         Button spectateButton = new Button("Spectate", this, "spectate");
         DynamicRow row = new DynamicRow(30, 1);
 
         Transform t = window.getTransform();
-        t.setScale(new Vector2f(300, 270));
+        t.setScale(new Vector2f(300, 300));
         Vector2i windowSize = renderer.getWindowSize();
 
         if (windowSize.x < 0 || windowSize.y < 0) {
@@ -54,9 +61,14 @@ public class MainMenu implements IButtonCallback {
         row.addElement(ipLabel);
         row.addElement(ipField);
         row.addElement(connectButton);
+        row.addElement(emptyLabel);
         row.addElement(spectateButton);
     }
 
+    /**
+     * Called when a button was clicked
+     * @param userData string to determine which button was clicked
+     */
     @Override
     public void buttonClicked(Object userData) {
         if (userData instanceof String) {
@@ -100,6 +112,9 @@ public class MainMenu implements IButtonCallback {
         }
     }
 
+    /**
+     * Removes the window from ui manager
+     */
     public void destroy() {
         if (window != null && renderer != null) {
             renderer.getUiManager().removeElement(window);
@@ -107,5 +122,9 @@ public class MainMenu implements IButtonCallback {
             nameField = null;
             ipField = null;
         }
+    }
+
+    public Window getWindow() {
+        return window;
     }
 }

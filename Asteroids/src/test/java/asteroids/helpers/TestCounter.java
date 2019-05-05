@@ -1,3 +1,5 @@
+package asteroids.helpers;
+
 public class TestCounter {
     private int[] counter;
 

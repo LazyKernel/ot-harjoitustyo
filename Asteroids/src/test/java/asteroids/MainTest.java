@@ -1,3 +1,5 @@
+package asteroids;
+
 import asteroids.Main;
 import asteroids.core.networking.ClientNetworking;
 import asteroids.core.networking.OfflineNetworking;

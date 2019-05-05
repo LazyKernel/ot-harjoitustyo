@@ -3,7 +3,8 @@ package asteroids.core.containers;
 import asteroids.core.graphics.Renderer;
 import asteroids.core.networking.INetworked;
 import asteroids.core.networking.INetworking;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import asteroids.core.physics.ICollider;
+import asteroids.core.physics.PhysicsEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ public class Entity {
                 continue;
             }
 
-            removeNetworkedComponentIfPossible(c);
+            removeSpecialComponentIfPossible(c);
             c.destroy();
         }
 
@@ -82,15 +83,7 @@ public class Entity {
         component.setEntity(this);
         component.init();
 
-        // doing this to fix testing
-        Renderer renderer = getRenderer();
-
-        if (renderer != null) {
-            INetworking networking = renderer.getNetworking();
-            if (INetworked.class.isAssignableFrom(component.getClass())) {
-                networking.addNetworkedComponent((INetworked) component);
-            }
-        }
+        addSpecialComponentIfPossible(component);
     }
 
     /**
@@ -123,7 +116,7 @@ public class Entity {
      * @param component reference to the component (expects non null)
      */
     public void removeComponent(EntityComponent component) {
-        removeNetworkedComponentIfPossible(component);
+        removeSpecialComponentIfPossible(component);
         component.destroy();
         entityComponents.remove(component);
     }
@@ -148,13 +141,36 @@ public class Entity {
         return entityId;
     }
 
-    private void removeNetworkedComponentIfPossible(EntityComponent component) {
+    private void addSpecialComponentIfPossible(EntityComponent component) {
         Renderer renderer = getRenderer();
 
         if (renderer != null) {
             INetworking networking = renderer.getNetworking();
-            if (INetworked.class.isAssignableFrom(component.getClass())) {
+            PhysicsEngine physics = renderer.getPhysics();
+
+            if (component instanceof INetworked) {
+                networking.addNetworkedComponent((INetworked) component);
+            }
+
+            if (component instanceof ICollider) {
+                physics.addCollider((ICollider) component);
+            }
+        }
+    }
+
+    private void removeSpecialComponentIfPossible(EntityComponent component) {
+        Renderer renderer = getRenderer();
+
+        if (renderer != null) {
+            INetworking networking = renderer.getNetworking();
+            PhysicsEngine physics = renderer.getPhysics();
+
+            if (component instanceof INetworked) {
                 networking.removeNetworkedComponent((INetworked) component);
+            }
+
+            if (component instanceof ICollider) {
+                physics.removeCollider((ICollider) component);
             }
         }
     }

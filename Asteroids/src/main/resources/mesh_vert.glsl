@@ -1,9 +1,9 @@
-#version 430
+#version 330
 
-layout (location = 0) in vec3 vertPos;
+in vec3 vertPos;
 
-layout (location = 1) uniform vec3 customColor;
-layout (location = 2) uniform mat4 transform;
+uniform vec3 customColor;
+uniform mat4 transform;
 
 out vec3 color;
 

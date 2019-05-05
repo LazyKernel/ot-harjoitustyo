@@ -31,5 +31,12 @@
 | 23.4. | 2 | elementtien luomista |
 | 25.4. | 2 | lisää elementtejä |
 | 26.4. | 4 | refraktorointia ja testien korjaamista |
-| | 2 | javadocin ja muun dokumentoinnin muokkaamista ja lisäämistä |
-| yht | 67 |
+| | 2 | javadocin ja muun dokumentoinnin muokkaamista ja lisäämistä |  67 tässä
+| 2.5. | 4 | physics enginen koodaamista, GJK algoritmin toteuttamista |
+| 3.5. | 3 | physics enginen viimeistely |
+| | 1 | glsl shaderit tukemaan vanhempaa versiota (3.30), toivottavasti toimii laitoksen koneilla nyt |
+| 4.5. | 1 | ruudukkopohjaisen broadphase algoritmin koodaamista |
+| | 4 | physics enginen debuggaamista |
+| 5.5. | 2 | ampumiseen ja pelaajiin liittyvien mekaniikkojen koodaamista |
+| | 8 | viimeistelyä loppupalautukseen |
+| yht | 90 |

@@ -1,5 +1,8 @@
 package asteroids.core.networking;
 
+/**
+ * NetPacket sent over the net
+ */
 public class NetPacket {
     public int entityId = -1;
     public int netID = -1;

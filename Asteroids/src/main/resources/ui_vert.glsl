@@ -1,10 +1,10 @@
-#version 430
+#version 330
 
-layout (location = 0) uniform mat4 projMatrix;
+uniform mat4 projMatrix;
 
-layout (location = 1) in vec2 pos;
-layout (location = 2) in vec2 texCoord;
-layout (location = 3) in vec4 color;
+in vec2 pos;
+in vec2 texCoord;
+in vec4 color;
 
 out vec2 fragUV;
 out vec4 fragColor;

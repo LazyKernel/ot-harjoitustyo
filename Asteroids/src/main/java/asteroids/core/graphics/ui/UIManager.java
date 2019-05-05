@@ -2,6 +2,7 @@ package asteroids.core.graphics.ui;
 
 import asteroids.core.containers.ModifiableList;
 import asteroids.core.file.FileLoader;
+import asteroids.core.graphics.ui.elements.callbacks.ICursorCallback;
 import org.joml.Matrix4f;
 import org.lwjgl.nuklear.*;
 import org.lwjgl.stb.STBTTAlignedQuad;
@@ -26,10 +27,14 @@ import static org.lwjgl.stb.STBTruetype.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.system.MemoryUtil.nmemFree;
 
+/**
+ * Renders and contains all UIElements
+ */
 public class UIManager {
     private ByteBuffer ttf;
 
     private ModifiableList<UIElement> elements = new ModifiableList<>(20);
+    private ModifiableList<ICursorCallback> cursorCallbacks = new ModifiableList<>(5);
 
     private NkContext ctx;
     private NkUserFont defaultFont;
@@ -46,11 +51,11 @@ public class UIManager {
 
     private Matrix4f projMatrix = new Matrix4f();
 
-    private final int matrixLoc = 0;
-    private final int posLoc = 1;
-    private final int uvLoc = 2;
-    private final int colorLoc = 3;
-    private final int texLoc = 4;
+    private int matrixLoc = 0;
+    private int posLoc = 1;
+    private int uvLoc = 2;
+    private int colorLoc = 3;
+    private int texLoc = 4;
 
     private final int maxBufferSize = 65536;
 
@@ -87,8 +92,18 @@ public class UIManager {
 
     }
 
+    /**
+     * Initialize the ui manager
+     * @param window pointer to glfw window
+     */
     public void init(long window) {
         shader.init();
+
+        matrixLoc = glGetUniformLocation(shader.getProgram(), "projMatrix");
+        texLoc = glGetUniformLocation(shader.getProgram(), "tex");
+        posLoc = glGetAttribLocation(shader.getProgram(), "pos");
+        uvLoc = glGetAttribLocation(shader.getProgram(), "texCoord");
+        colorLoc = glGetAttribLocation(shader.getProgram(), "color");
 
         setUpCallbacks(window);
         nk_init(ctx, allocator, null);
@@ -119,6 +134,11 @@ public class UIManager {
         setupFont();
     }
 
+    /**
+     * Ran every frame unless on a server. Updates all UIElements
+     * @see UIElement#update(float)
+     * @param deltaTime seconds since last update
+     */
     public void update(float deltaTime) {
         for (UIElement e : elements) {
             if (e == null) {
@@ -129,6 +149,10 @@ public class UIManager {
         }
     }
 
+    /**
+     * Renders all UIElements and displays their render commands
+     * @see UIElement#render()
+     */
     public void render() {
         for (UIElement e : elements) {
             if (e == null) {
@@ -216,6 +240,11 @@ public class UIManager {
         }
     }
 
+    /**
+     * Call this if window dimensions change
+     * @param width new width
+     * @param height new height
+     */
     public void updateScreenDimensions(int width, int height) {
         projMatrix = new Matrix4f(2.0f / width, 0.0f, 0.0f, 0.0f,
                 0.0f, -2.0f / height, 0.0f, 0.0f,
@@ -226,10 +255,17 @@ public class UIManager {
         windowHeight = height;
     }
 
+    /**
+     * Begin collecting inputs. Call before glfwPollEvents()
+     */
     public void beginInput() {
         nk_input_begin(ctx);
     }
 
+    /**
+     * End collecting inputs. Call directly after glfwPollEvents()
+     * @param window pointer to glfw window
+     */
     public void endInput(long window) {
         NkMouse mouse = ctx.input().mouse();
         if (mouse.grab()) {
@@ -256,9 +292,9 @@ public class UIManager {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-        glEnableVertexAttribArray(3);
+        glEnableVertexAttribArray(posLoc);
+        glEnableVertexAttribArray(uvLoc);
+        glEnableVertexAttribArray(colorLoc);
 
         glVertexAttribPointer(posLoc, 2, GL_FLOAT, false, 20, 0);
         glVertexAttribPointer(uvLoc, 2, GL_FLOAT, false, 20, 8);
@@ -473,6 +509,12 @@ public class UIManager {
 
     private void cursorPosCallback(int xPos, int yPos) {
         nk_input_motion(ctx, xPos, yPos);
+
+        for (ICursorCallback callback : cursorCallbacks) {
+            if (callback != null) {
+                callback.cursorPos(xPos, yPos);
+            }
+        }
     }
 
     private void mouseButtonCallback(long window, int button, int action) {
@@ -506,6 +548,10 @@ public class UIManager {
         }
     }
 
+    /**
+     * Load a font to be used in ui elements
+     * @param fileName path to a font file
+     */
     public void loadFont(String fileName) {
         try {
             ttf = FileLoader.loadFileAsByteBuffer(fileName);
@@ -514,22 +560,32 @@ public class UIManager {
         }
     }
 
-    public boolean isCaptureMouse() {
-        return captureMouse;
-    }
-
-    public void setCaptureMouse(boolean captureMouse) {
-        this.captureMouse = captureMouse;
-    }
-
+    /**
+     * Add and initialize ui element
+     * @see UIElement#init()
+     * @param element element to add
+     */
     public void addElement(UIElement element) {
         element.setCtx(ctx);
         elements.add(element);
         element.init();
     }
 
+    /**
+     * Remove and destroy ui element
+     * @see UIElement#destroy()
+     * @param element
+     */
     public void removeElement(UIElement element) {
         element.destroy();
         elements.remove(element);
+    }
+
+    public void addCursorCallback(ICursorCallback callback) {
+        cursorCallbacks.add(callback);
+    }
+
+    public void removeCursorCallback(ICursorCallback callback) {
+        cursorCallbacks.remove(callback);
     }
 }

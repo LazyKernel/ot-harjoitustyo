@@ -3,6 +3,9 @@ package asteroids.core.networking;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Networking for offline play
+ */
 public class OfflineNetworking extends INetworking {
 
     public OfflineNetworking() {

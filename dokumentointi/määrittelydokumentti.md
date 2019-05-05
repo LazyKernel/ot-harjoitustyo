@@ -1,38 +1,27 @@
 # Vaatimusmäärittely
 ## Sovelluksen tarkoitus
-Sovellus on suunniteltu pieneksi hauskaksi asteroids-klooniksi, jota kaksi pelaajaa voivat pelata keskenään.
+Sovellus on 2d vektoripohjainen pelimoottori, jossa on mukana ominaisuuksia demoava asteroids-klooni.
 
 ## Käyttäjät
-Sovelluksella on vain _peruskäyttäjiä_. Tarvittaessa voidaan myös lisätä _game host_ -rooli, joka pystyy esimerkiksi potkimaan muita pelaajia pelistään ja muokkaamaan kyseisen pelisession asetuksia.
+Sovelluksella on _pelaajia_, _katsojia_ ja _serveri_. Serveri on aina päättävä elin pelissä. Pelaajat pystyvät hallitsemaan omaa alustaan. Katsojat näkevät serverin tilan, mutta eivät pysty mitenkään vaikuttamaan pelin kulkuun. Servereitä on yksi, pelaajia maksimissaan neljä (tosin tätä voi muokata muuttamalla yhtä muuttujaa) ja katsojia rajaton määrä. 
 
-## Suunnitellut toiminnallisuudet
-### Ennen kirjautumista
-* käyttäjä voi luoda uuden käyttäjän, jolla on käyttäjätunnus ja salasana
-  * käyttäjätunnusta käytetään käyttäjien tunnistamiseen joten sen tulee olla uniikki
-  * salasana tallennetaan hyvin turvattomasti palvelimelle, sillä tietoturva ei ole kurssin pääidea
-* käyttäjä voi kirjautua peliin
-  * jos käyttäjätunnusta ei ole tai salasana ja käyttäjätunnus eivät sovi yhteen, tästä ilmoitetaan käyttäjälle
+## Tämän hetkiset toiminnallisuudet
+### Ennen yhdistämistä
+* käyttäjä voi yhdistää serveriin
+  * jos käyttäjätunnusta ei anneta, yhdistetään katselijana
 
 ### Kirjautumisen jälkeen
-* käyttäjän kustomointi ladataan palvelimelta
-* pelaaja voi liittyä peliin
+* pelaaja luodaan peliin
+* pelaajalla lähtetään tiedot muista jo serverillä olevista objekteista
 * peli suoritetaan palvelimella ja clientillä
   * palvelin päättää, mitä pelissä tapahtuu
     * pelaajat lähettävät syötteen palvelimelle ja palvelin palauttaa muuttuneen tilan pelaajille
-	* client ennustaa, mitä palvelimella tapahtuu, jotta peli ei pätki (paitsi jos viive on äärimmäisen epävakaa)
-* käyttäjä voi kirjautua ulos
-* käyttäjä voi muokata tietojansa
-  * käyttäjä voi muokata aluksensa väriä
-  * käyttäjä voi muokata muille pelaajille näkyvää nimeä (ei riipu käyttäjätunnuksesta)
   
 ## Jatkokehitysideoita
 Perusversion jälkeen voidaan täydentää seuraavilla ideoilla
-* tietoturva
-  * salasanat tallennetaan turvallisemmin
-  * käyttäjätunnus ja salasana varmistetaan palvelimelta, jolloin palvelin antaa pelille avaimen, jonka käyttöaika umpeutuu, jos sitä ei käytetä
-    * minuutin välein lähetetään _heartbeat_ -paketti palvelimelle, jotta avain ei umpeudu
-  * salasana ei saa mennä väärin 5 kertaa useammin viiden minuutin sisällä tai käyttäjä menee lukkoon viideksi minuutiksi
-* lisää kustomointia
+* salasanat (jonkin verran turvallisia edes)
+* kustomointia
+  * alusten väri
   * alusten muoto
   * pelaajien avatar
 * tallennetaan pisteet palvelimelle

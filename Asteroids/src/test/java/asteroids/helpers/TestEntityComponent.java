@@ -1,4 +1,7 @@
+package asteroids.helpers;
+
 import asteroids.core.containers.EntityComponent;
+import asteroids.helpers.TestCounter;
 
 public class TestEntityComponent extends EntityComponent
 {

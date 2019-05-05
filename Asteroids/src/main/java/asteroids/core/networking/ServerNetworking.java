@@ -9,12 +9,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Networking for server side
+ */
 public class ServerNetworking extends INetworking {
 
-    public ServerNetworking() {
+    private int numPlayers = 0;
+    private int maxPlayers = 255;
+
+    public ServerNetworking(int maxPlayers) {
         isServer = true;
+        this.maxPlayers = maxPlayers;
     }
 
+    /**
+     * Starts a server
+     */
     @Override
     public void init() {
         System.out.println("Starting server.");
@@ -39,7 +49,10 @@ public class ServerNetworking extends INetworking {
                 if (c.name.isEmpty()) {
                     System.out.println("Spectator disconnected.");
                 } else {
-                    System.out.println("Player " + c.name + " disconnected.");
+                    if (!c.disconnectedByServer) {
+                        System.out.println("Player " + c.name + " disconnected.");
+                        numPlayers--;
+                    }
                 }
 
                 for (int i : c.ownedIds) {
@@ -54,6 +67,10 @@ public class ServerNetworking extends INetworking {
         lastDelta = deltaTime;
     }
 
+    /**
+     * Sends the current state to all connected clients
+     * @param deltaTime seconds since last update
+     */
     @Override
     public void postUpdate(float deltaTime) {
         for (INetworked n : networkeds) {
@@ -76,6 +93,9 @@ public class ServerNetworking extends INetworking {
         removeQueuedComponents();
     }
 
+    /**
+     * Disconnects the server
+     */
     @Override
     public void destroy() {
         server.stop();
@@ -134,6 +154,16 @@ public class ServerNetworking extends INetworking {
                     sendStateToConnectedClient(connection);
                 } else {
                     System.out.println("Player " + split[1] + " connected.");
+
+                    if (numPlayers >= maxPlayers) {
+                        NetConnection conn = (NetConnection) connection;
+                        conn.disconnectedByServer = true;
+                        conn.sendTCP("d;Server full.");
+                        conn.close();
+                        return;
+                    }
+
+                    numPlayers++;
                     sendStateToConnectedClient(connection);
                     INetworked n = createPlayer(split[1]);
                     NetConnection c = (NetConnection) connection;
@@ -174,6 +204,10 @@ public class ServerNetworking extends INetworking {
         connection.sendTCP(packet);
     }
 
+    /**
+     * Add a new networked component, initialize it and set its net id. Sends the new entity containing the component to all clients.
+     * @param component component to add
+     */
     @Override
     public void addNetworkedComponent(INetworked component) {
         component.setNetId(getNewNetId());
@@ -185,6 +219,10 @@ public class ServerNetworking extends INetworking {
         }
     }
 
+    /**
+     * Remove a networked component. Send a message to all clients to remove the entity containing the component
+     * @param component component to remove
+     */
     @Override
     public void removeNetworkedComponent(INetworked component) {
         if (component == null) {

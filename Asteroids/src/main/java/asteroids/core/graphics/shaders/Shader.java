@@ -107,4 +107,8 @@ public abstract class Shader {
     public void unbind() {
         glUseProgram(0);
     }
+
+    public int getProgram() {
+        return pProgram;
+    }
 }

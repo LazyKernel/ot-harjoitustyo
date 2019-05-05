@@ -73,6 +73,7 @@
 						<exclude>asteroids/core/graphics/ui/elements/*</exclude>
 						<exclude>asteroids/core/graphics/shaders/*</exclude>
 						<exclude>asteroids/core/networking/*</exclude>
+						<exclude>asteroids/game/ui/*</exclude>
 					</excludes>
 				</configuration>
                 <executions>

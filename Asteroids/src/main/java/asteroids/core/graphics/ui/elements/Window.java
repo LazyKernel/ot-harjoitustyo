@@ -2,10 +2,10 @@ package asteroids.core.graphics.ui.elements;
 
 import asteroids.core.containers.Transform;
 import asteroids.core.graphics.ui.UIElement;
+import asteroids.core.graphics.ui.elements.callbacks.IWindowCallback;
 import asteroids.core.input.KeyboardHandler;
 import org.joml.Vector2f;
 import org.lwjgl.nuklear.NkRect;
-import org.lwjgl.system.MemoryStack;
 
 import static org.lwjgl.nuklear.Nuklear.*;
 
@@ -15,6 +15,7 @@ public class Window extends UIElement {
     private int flags;
     private NkRect windowRect = null;
     private boolean blocksInput;
+    private IWindowCallback callback = null;
 
     public Window() {
         name = "";
@@ -57,6 +58,8 @@ public class Window extends UIElement {
             nk_begin(getCtx(), name, windowRect, flags);
             nk_end(getCtx());
         } else if (!closeable || !nk_window_is_closed(getCtx(), name)) {
+            Transform t = getTransform();
+            nk_rect(t.getPosition().x, t.getPosition().y, t.getScale().x, t.getScale().y, windowRect);
             if (nk_begin(getCtx(), name, windowRect, flags)) {
                 for (UIElement e : elements) {
                     if (e == null) {
@@ -67,8 +70,14 @@ public class Window extends UIElement {
                 }
             }
             nk_end(getCtx());
-        } else if (blocksInput) {
-            KeyboardHandler.setBlockInput(false);
+        } else {
+            if (callback != null) {
+                callback.windowClosed(name);
+            }
+
+            if (blocksInput) {
+                KeyboardHandler.setBlockInput(false);
+            }
         }
     }
 
@@ -92,5 +101,9 @@ public class Window extends UIElement {
         }
 
         KeyboardHandler.setBlockInput(false);
+    }
+
+    public void setCallback(IWindowCallback callback) {
+        this.callback = callback;
     }
 }

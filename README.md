@@ -1,10 +1,11 @@
-# Multiplayer Asteroids
+# 2D Vector Game Engine & Multiplayer Asteroids Demo
+
 ## Features
-* Simple 2 person multiplayer
-* OpenGL (most likely)
-* Simple UI
-* Score data
-* Simple player customization
+* Entity-Component system
+* 2D vector based rendering with OpenGL
+* Server authoritative networking with Kryonet
+* 2D hit detection with arbitrary vector shapes
+* Expandable UI system with Nuklear
   
 ## Linkkejä
 
@@ -15,6 +16,8 @@
 [Työaikakirjanpito](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/dokumentointi/ty%C3%B6aikakirjanpito.md)
 
 [Arkkitehtuuri](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/dokumentointi/arkkitehtuuri.md)
+
+[Testausdokumentti](https://github.com/LazyKernel/ot-harjoitustyo/blob/master/dokumentointi/testausdokumentti.md)
 
 [Käyttöohje](https://github.com/LazyKernel/ot-harjoitustyo/tree/master/dokumentointi/kayttoohje.md)
 

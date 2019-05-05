@@ -5,15 +5,13 @@ import asteroids.core.graphics.ui.elements.callbacks.IButtonCallback;
 
 import static org.lwjgl.nuklear.Nuklear.nk_button_label;
 
+/**
+ * Button ui element
+ */
 public class Button extends UIElement {
     private String text;
     private IButtonCallback listener;
     private Object userData;
-
-    public Button() {
-        text = "";
-        listener = null;
-    }
 
     public Button(String text, IButtonCallback listener, Object userData) {
         this.text = text;
@@ -45,11 +43,19 @@ public class Button extends UIElement {
 
     }
 
+    /**
+     * Button cannot have children
+     * @param element not used
+     */
     @Override
     public void addElement(UIElement element) {
         System.err.println("Button cannot have children.");
     }
 
+    /**
+     * Button cannot have children
+     * @param element not used
+     */
     @Override
     public void removeElement(UIElement element) {
         System.err.println("Button cannot have children.");

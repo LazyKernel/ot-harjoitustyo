@@ -49,7 +49,7 @@ public class ModifiableListIterator<T> implements Iterator<T> {
     }
 
     /**
-     * Not implemented yet
+     * Not implemented
      */
     @Override
     public void remove() {

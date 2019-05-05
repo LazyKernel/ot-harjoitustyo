@@ -1,5 +1,8 @@
+package asteroids;
+
 import asteroids.core.containers.Entity;
 import asteroids.core.containers.ModifiableList;
+import asteroids.helpers.TestEntityComponent;
 import org.junit.Before;
 import org.junit.Test;
 

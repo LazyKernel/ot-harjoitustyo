@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Networking for client side
+ */
 public class ClientNetworking extends INetworking {
 
     private float deltaCounter = 0.0f;
@@ -34,6 +37,10 @@ public class ClientNetworking extends INetworking {
         deltaCounter += deltaTime;
     }
 
+    /**
+     * Sends the client state of all networked components owned by this client to the server
+     * @param deltaTime seconds since last update
+     */
     @Override
     public void postUpdate(float deltaTime) {
         if (deltaCounter < 0.016f) {
@@ -61,16 +68,27 @@ public class ClientNetworking extends INetworking {
         removeQueuedComponents();
     }
 
+    /**
+     * Disconnects from the server
+     */
     @Override
     public void destroy() {
         client.stop();
     }
 
+    /**
+     * Client doesn't set net ids
+     * @return -1
+     */
     @Override
     public int getNewNetId() {
         return -1;
     }
 
+    /**
+     * Connect to the server with ip and username set in this class and INetworking
+     * @see INetworking
+     */
     public void connect() {
         client.start();
         try {

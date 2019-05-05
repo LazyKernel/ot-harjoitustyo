@@ -1,3 +1,5 @@
+package asteroids;
+
 import asteroids.core.containers.Entity;
 import asteroids.core.graphics.Renderer;
 import asteroids.core.networking.ServerNetworking;
@@ -18,7 +20,7 @@ public class BulletTest {
 
     @Before
     public void setUp() {
-        networking = new ServerNetworking();
+        networking = new ServerNetworking(4);
         networking.setUsername("test");
         renderer = new Renderer(new AsteroidsGame(), networking);
         entity = new Entity();

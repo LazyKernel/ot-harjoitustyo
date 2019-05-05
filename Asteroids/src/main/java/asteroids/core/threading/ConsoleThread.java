@@ -4,6 +4,9 @@ import asteroids.core.graphics.Renderer;
 
 import java.util.Scanner;
 
+/**
+ * Creates a new thread for headless server. If quit is written in the console, the server shuts down.
+ */
 public class ConsoleThread implements Runnable {
 
     private Scanner scanner;

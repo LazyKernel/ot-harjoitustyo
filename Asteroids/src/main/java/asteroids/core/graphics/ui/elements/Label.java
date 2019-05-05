@@ -5,15 +5,13 @@ import asteroids.core.graphics.ui.UIElement;
 import static org.lwjgl.nuklear.Nuklear.NK_TEXT_ALIGN_LEFT;
 import static org.lwjgl.nuklear.Nuklear.nk_label;
 
+/**
+ * Basic label ui element
+ */
 public class Label extends UIElement {
 
     private String text;
     private int flags;
-
-    public Label() {
-        text = "Label";
-        flags = NK_TEXT_ALIGN_LEFT;
-    }
 
     public Label(String text, int flags) {
         this.text = text;
@@ -40,11 +38,19 @@ public class Label extends UIElement {
 
     }
 
+    /**
+     * Label cannot have children
+     * @param element not used
+     */
     @Override
     public void addElement(UIElement element) {
         System.err.println("Label cannot have children.");
     }
 
+    /**
+     * Label cannot have children
+     * @param element not used
+     */
     @Override
     public void removeElement(UIElement element) {
         System.err.println("Label cannot have children.");
@@ -56,13 +62,5 @@ public class Label extends UIElement {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public int getFlags() {
-        return flags;
-    }
-
-    public void setFlags(int flags) {
-        this.flags = flags;
     }
 }
