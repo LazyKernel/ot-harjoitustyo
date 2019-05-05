@@ -154,7 +154,6 @@ public class AsteroidsGame extends Game implements IWindowCallback {
         if (title.equals("Asteroids")) {
             mainMenuClosed = true;
             score.createMenu(renderer);
-            menu.destroy();
         }
     }
 }

@@ -100,6 +100,10 @@ public class Window extends UIElement {
             e.destroy();
         }
 
+        if (callback != null) {
+            callback.windowClosed(name);
+        }
+
         KeyboardHandler.setBlockInput(false);
     }
 
